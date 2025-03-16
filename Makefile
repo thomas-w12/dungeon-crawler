@@ -4,7 +4,7 @@ TEST_FLAGS =
 
 all: dungeon_crawler
 
-dungeon_crawler: src/main.c
+dungeon_crawler: src/main.c src/game_loop.c
 	$(CC) $(CFLAGS) $^ -o $@
 
 test: tests/sample_test.c
