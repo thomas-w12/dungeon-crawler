@@ -16,5 +16,5 @@ make
 ```
 ### For Mac/Linux OS run
 ```
-make MakeFileUnix
+make -f MakeFileUnix all
 ```
