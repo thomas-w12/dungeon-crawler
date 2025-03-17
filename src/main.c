@@ -4,6 +4,7 @@
 #include "../include/room.h"
 #include "../include/player.h"
 #include "../include/item.h"
+#include "../include/game_loop.h"
 
 void test(int** arr){
     arr[0] = malloc(3 * sizeof(int));  // Allocate memory
@@ -22,7 +23,6 @@ void testItem(Item items[], int itemCount){
     }
 }
 
-#include "../include/game_loop.h"
 
 int main(int argc, char *argv[]) {
     int roomCount = 0;
@@ -40,7 +40,6 @@ int main(int argc, char *argv[]) {
     Item itemsArr[] = {*item1, *item2, *item3, *item4}; 
     int itemsLength = sizeof(itemsArr) / sizeof(Item);  
     
-
     Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, itemsArr, itemsLength);
     Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, itemsArr, 0);
 

@@ -11,7 +11,9 @@
 typedef struct Player{
     char name[10]; // Tell player to enter name at begining. Max length of about 10 characters
     int currentRoom; //ID of current room
-    Item items[MAX_PLAYER_ITEMS]; // List of items the player has
+    int health; // Health bar
+    int score;
+    Item inventory[MAX_PLAYER_ITEMS]; // List of items the player has
     int itemsCount;
 }Player;
 
@@ -20,7 +22,5 @@ void moveSouth(Player* player, Room* currentRoom);
 void moveWest(Player* player, Room* currentRoom);
 void moveEast(Player* player, Room* currentRoom);
 void pickUpItem(Player* player, Item item);
-int savePlayerState(const char* playerStateFPath, Player* player);
-int loadPlayerState(const char* playerStateFPath, Player* player);
 
 #endif

@@ -24,6 +24,10 @@ void Room_destroy(Room* room){
     free(room);
 }
 
+void Room_copy(Room* src, Room* dest){
+
+}
+
 Room* Room_construct(int ID, char* name, char* description, Room* north, Room* south, Room* west, Room* east, Item items[], int itemCount){
     // Thinking of adding Room* rooms[] and int* roomCount to the signature so anytime a room is constructed, addition to rooms and increasing room count would be done in one function; (or maybe it should be done in addRoom())
     Room* room = (Room*)malloc(sizeof(Room));
@@ -125,8 +129,6 @@ Room* parseRoom(char* line, Room* rooms[]){
     
     if (index < 7) return NULL; // Index must be greater than (room with 1 or more items) or equal to 7 (room with zero items) for all valid room line [Count the number of commas + 1 in the layout that is the index]
 
-    // room = Room_construct(ID, name, description, north, south, west, east, items, itemCount);
-    // displayRoom(room);
     return Room_construct(ID, name, description, north, south, west, east, items, itemCount);
 }
 
@@ -220,13 +222,11 @@ void serializeRoom(Room* room, char* line){
     }else{
         strcat(line, "NULL");
     }
-    // strcat(line, ",");
 
     for (int i=0;i<room->itemsCount;i++){
         strcat(line, ",");
         char itemIDStr[12];
         sprintf(itemIDStr, "%d", room->items[i].ID);
-        // printf("\n%d", room->items[i].ID);
         strcat(line, itemIDStr);
     }
 
@@ -261,7 +261,6 @@ void generateLayout(Room* rooms[], int* roomCount){
 
 }
 
-
 void displayRoom(Room* room){
     if (room == NULL){
         printf("\nRoom does not exist");
@@ -291,16 +290,16 @@ void exploreDungeon(Room* currentRoom){
     displayRoom(currentRoom);
 
     char choice;
-    printf("\nWhere would you like to go?\nN - go north\nS - go south\nW - go west\nE - go east");
+    printf("\nWhere would you like to go?\nN - go north\nS - go south\nW - go west\nE - go east\n");
     scanf("%c", &choice);
-
+    printf("Choice: %c", choice);
     switch(choice){
         case 'n':
         case 'N':
             if (currentRoom->north == NULL){
                 printf("\nThere is no path on the north.");
                 exploreDungeon(currentRoom);
-                return;
+                break;
             }
             exploreDungeon(currentRoom->north);
             break;
@@ -351,17 +350,4 @@ void freeRooms(Room* rooms[], int* roomCount){
     }
 
     *roomCount = 0;
-}
-
-void freeRoomConnections(int** roomsConnections, int roomCount){
-    if (roomCount == 0){
-        printf("\nThere are no room connections!");
-        return;
-    }
-
-    for (int i=0; i<roomCount; i++){
-        free(roomsConnections[i]);
-    }
-
-    free(roomsConnections);
 }

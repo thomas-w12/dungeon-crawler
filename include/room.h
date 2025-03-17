@@ -6,7 +6,7 @@
 
 #define MAX_ROOMS 10
 #define MAX_ROOM_LINE_LEN 100 // Max length of the room line stored in the layout.txt
-#define MAX_ITEMS_IN_ROOM 4
+#define MAX_ITEMS_IN_ROOM 3
 #define DNE -1 // (Ignore for now) Does not exist. Used to represent an int array element that does not exist (since NULL can't be used).
 
 typedef struct Room{
