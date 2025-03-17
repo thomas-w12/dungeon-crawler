@@ -19,6 +19,8 @@ void testItem(Item items[], int itemCount){
     }
 }
 
+#include "game_loop.h"
+
 int main(int argc, char *argv[]) {
     int roomCount = 0;
     Room* rooms[MAX_ROOMS];
