@@ -3,6 +3,7 @@
 #include "../include/room.h"
 #include "../include/player.h"
 #include "../include/item.h"
+#include "../include/game_loop.h"
 
 void test(int** arr){
     int a[] = {1, 2, 3};
@@ -19,7 +20,6 @@ void testItem(Item items[], int itemCount){
     }
 }
 
-#include "game_loop.h"
 
 int main(int argc, char *argv[]) {
     int roomCount = 0;
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     Item item3 = Item_construct(2);
     Item item4 = Item_construct(3);
     
-    Item items[] = {item1, item2, item3, item4};
+    Item items[] = {item1, item2, item3};
     int itemsLength = sizeof(items)/sizeof(Item);
 
     Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, items, itemsLength);
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     }
     
     saveLayout(layoutStateFPath, rooms, roomCount);
-    // exploreDungeon(room);
+    exploreDungeon(room);
     
     // Room_destroy(room);
     freeRooms(rooms, &roomCount);

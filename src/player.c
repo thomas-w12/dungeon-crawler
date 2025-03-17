@@ -25,31 +25,3 @@ void moveEast(Player* player, Room* currentRoom){
 void pickUpItem(Player* player, Item item){
 
 }
-
-void loadPlayerState(FILE* f, Player* player){
-    char line[100];
-    fscanf(f, "%s", line);
-    char* token = strtok(line, ",");
-
-    int index = 0;
-    while (token != NULL){
-        switch(index){
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-        }
-
-        token = strtok(NULL, ",");
-        index ++;
-    }
-
-}
-
-void savePlayerState(FILE* f, Player player){
-
-}
