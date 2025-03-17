@@ -19,11 +19,11 @@ Item* Item_construct(int ID) {
 }
 
 
-void displayItem(Item item){
-    printf("\nItem - ID: %d\tType: %s\tDescription: %s", item.ID, item.type, item.description);
+void displayItem(Item* item){
+    printf("\nItem - ID: %d\tType: %s\tDescription: %s", item->ID, item->type, item->description);
 }
 
-void displayItems(Item items[], int itemCount){
+void displayItems(Item* items[], int itemCount){
     if (itemCount == 0){
         printf("There are no items!");
         return;
@@ -32,4 +32,15 @@ void displayItems(Item items[], int itemCount){
     for (int i=0; i<itemCount;i++){
         displayItem(items[i]);
     }
+}
+
+void freeItem(Item* item){
+    free(item);
+}
+
+void freeItems(Item* items[], int* itemsCoumt){
+    for (int i=0; i<*itemsCoumt; i++){
+        free(items[i]);
+    }
+    *itemsCoumt = 0;
 }

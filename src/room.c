@@ -20,7 +20,8 @@ void Room_destroy(Room* room){
     if (room->east != NULL){
         room->east->west = room->west;
     }
-    
+
+    // freeItems(room->items, &room->itemsCount); //(Items are global and only allocated once, only freed at end of program)
     free(room);
 }
 
@@ -28,7 +29,7 @@ void Room_copy(Room* src, Room* dest){
 
 }
 
-Room* Room_construct(int ID, char* name, char* description, Room* north, Room* south, Room* west, Room* east, Item items[], int itemCount){
+Room* Room_construct(int ID, char* name, char* description, Room* north, Room* south, Room* west, Room* east, Item* items[], int itemCount){
     // Thinking of adding Room* rooms[] and int* roomCount to the signature so anytime a room is constructed, addition to rooms and increasing room count would be done in one function; (or maybe it should be done in addRoom())
     Room* room = (Room*)malloc(sizeof(Room));
     if (room == NULL){
@@ -65,7 +66,7 @@ Room* parseRoom(char* line, Room* rooms[]){
     Room* south;
     Room* west;
     Room* east;
-    Item items[MAX_ITEMS_IN_ROOM];
+    Item* items[MAX_ITEMS_IN_ROOM];
     int itemCount = 0;
 
     int* connections = (int*)malloc(sizeof(int)*4); // Four possible connection N S W E
@@ -119,7 +120,7 @@ Room* parseRoom(char* line, Room* rooms[]){
             case 7:
             case 8:
             case 9: // There are max 3 items in the room
-                items[itemCount] = *Item_construct(strtol(token, NULL, 10));
+                items[itemCount] = Item_construct(strtol(token, NULL, 10));
                 itemCount++;
                 break;
         }
@@ -226,7 +227,7 @@ void serializeRoom(Room* room, char* line){
     for (int i=0;i<room->itemsCount;i++){
         strcat(line, ",");
         char itemIDStr[12];
-        sprintf(itemIDStr, "%d", room->items[i].ID);
+        sprintf(itemIDStr, "%d", room->items[i]->ID);
         strcat(line, itemIDStr);
     }
 
@@ -283,16 +284,16 @@ void displayRooms(Room* rooms[], int roomCount){
 }
 
 void exploreDungeon(Room* currentRoom){
-    if (currentRoom == NULL) {
-        printf("You have reached a dead end!\n");
-        return;
-    }
+    // if (currentRoom == NULL) {
+    //     printf("You have reached a dead end!\n");
+    //     return;
+    // }
+    printf("\n");
     displayRoom(currentRoom);
 
     char choice;
     printf("\nWhere would you like to go?\nN - go north\nS - go south\nW - go west\nE - go east\n");
-    scanf("%c", &choice);
-    printf("Choice: %c", choice);
+    scanf(" %c", &choice);
     switch(choice){
         case 'n':
         case 'N':

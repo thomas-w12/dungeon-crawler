@@ -18,13 +18,13 @@ int saveLayout(const char* layoutStateFPath, Room* rooms[], int roomCount) {
         fprintf(file, "%d,%s,%s,", room->ID, room->name, room->description);
 
         fprintf(file, "%d,%d,%d,%d,", 
-                (room->north ? room->north->ID : -1),
-                (room->south ? room->south->ID : -1),
-                (room->west ? room->west->ID : -1),
-                (room->east ? room->east->ID : -1));
+                (room->north ? room->north->ID : DNE),
+                (room->south ? room->south->ID : DNE),
+                (room->west ? room->west->ID : DNE),
+                (room->east ? room->east->ID : DNE));
 
         for (int j = 0; j < room->itemsCount; j++) {
-            fprintf(file, "%d,", room->items[j].ID);
+            fprintf(file, "%d,", room->items[j]->ID);
         }
 
         fprintf(file, "\n");
@@ -52,24 +52,26 @@ int loadLayout(const char* layoutStateFPath, Room* rooms[], int* roomCount) {
         }
 
         int id, northID, southID, westID, eastID;
-        char name[10], description[20];
+        char name[10], description[30];
 
-        fscanf(file, "%d,%9[^,],%19[^,],%d,%d,%d,%d,", 
-               &id, name, description, &northID, &southID, &westID, &eastID);
+        fscanf(file, "%d,%10[^,],%30[^,],%d,%d,%d,%d,", 
+               &id, name, description, &northID, &southID, &westID, &eastID); //30 here reads at most 30 characters as the description and 10 as the name
 
         rooms[i]->ID = id;
         strcpy(rooms[i]->name, name);
         strcpy(rooms[i]->description, description);
-        rooms[i]->north = (northID != -1) ? rooms[northID] : NULL;
-        rooms[i]->south = (southID != -1) ? rooms[southID] : NULL;
-        rooms[i]->west = (westID != -1) ? rooms[westID] : NULL;
-        rooms[i]->east = (eastID != -1) ? rooms[eastID] : NULL;
+        rooms[i]->north = (northID != DNE) ? rooms[northID] : NULL;
+        rooms[i]->south = (southID != DNE) ? rooms[southID] : NULL;
+        rooms[i]->west = (westID != DNE) ? rooms[westID] : NULL;
+        rooms[i]->east = (eastID != DNE) ? rooms[eastID] : NULL;
         rooms[i]->itemsCount = 0;
 
         while (fgetc(file) != '\n' && !feof(file)) {
+            fseek(file, -1, SEEK_CUR); // Go back one char from current position(fgetc pushed it forward)
             int itemID;
             fscanf(file, "%d,", &itemID);
-            rooms[i]->items[rooms[i]->itemsCount++] = Item_construct(itemID);
+            rooms[i]->items[rooms[i]->itemsCount] = Item_construct(itemID);
+            rooms[i]->itemsCount++;
         }
     }
 
@@ -87,7 +89,7 @@ int savePlayerState(const char* playerStateFPath, Player* player) {
 
     fprintf(file, "%s,%d,", player->name, player->currentRoom);
     for (int i = 0; i < player->itemsCount; i++) {
-        fprintf(file, "%d,", player->items[i].ID);
+        fprintf(file, "%d,", player->inventory[i]->ID);
     }
 
     fprintf(file, "\n");
@@ -109,7 +111,7 @@ int loadPlayerState(const char* playerStateFPath, Player* player) {
     while (fgetc(file) != '\n' && !feof(file)) {
         int itemID;
         fscanf(file, "%d,", &itemID);
-        player->items[player->itemsCount++] = Item_construct(itemID);
+        player->inventory[player->itemsCount++] = Item_construct(itemID);
     }
 
     fclose(file);

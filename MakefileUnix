@@ -1,0 +1,34 @@
+CC = gcc
+CFLAGS = -Wall -Wshadow -Wextra -I./include
+EXE = dungeon_crawler
+
+SRCDIR = src
+TESTDIR = tests
+OBJDIR = build
+SRCS = $(wildcard $(SRCDIR)/*.c)
+TEST_SRCS = $(wildcard $(TESTDIR)/*.c)
+OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
+TEST_OBJS = $(patsubst $(TESTDIR)/%.c, $(OBJDIR)/%.o, $(TEST_SRCS))
+
+VPATH = $(SRCDIR) $(TESTDIR)
+
+all: $(EXE)
+
+$(EXE): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(EXE)
+
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+test: $(TEST_OBJS)
+	$(CC) $(CFLAGS) $(TEST_OBJS) -o $(OBJDIR)/test_runner
+	$(OBJDIR)/test_runner
+
+clean:
+	rm -rf $(EXE) $(OBJDIR)
+
+run:
+	./$(EXE)

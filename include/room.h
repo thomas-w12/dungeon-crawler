@@ -12,17 +12,17 @@
 typedef struct Room{
     int ID; 
     char name[10];
-    char description[20];
+    char description[30];
     struct Room *north;
     struct Room *south;
     struct Room *east;
     struct Room *west;
-    Item items[MAX_ITEMS_IN_ROOM];
+    Item* items[MAX_ITEMS_IN_ROOM];
     int itemsCount;
 } Room;
 
 void Room_destroy(Room* room);
-Room* Room_construct(int ID, char* name, char* description, Room* north, Room* south, Room* west, Room* east, Item items[], int itemCount);
+Room* Room_construct(int ID, char* name, char* description, Room* north, Room* south, Room* west, Room* east, Item* items[], int itemCount);
 // Room* addRoom(char* name, char* description);
 Room* parseRoom(char* line, Room* rooms[]);
 void serializeRoom(Room* room, char* line);

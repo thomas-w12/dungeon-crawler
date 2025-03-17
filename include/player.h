@@ -13,7 +13,7 @@ typedef struct Player{
     int currentRoom; //ID of current room
     int health; // Health bar
     int score;
-    Item inventory[MAX_PLAYER_ITEMS]; // List of items the player has
+    Item* inventory[MAX_PLAYER_ITEMS]; // List of items the player has
     int itemsCount;
 }Player;
 
@@ -21,6 +21,6 @@ void moveNorth(Player* player, Room* currentRoom);
 void moveSouth(Player* player, Room* currentRoom);
 void moveWest(Player* player, Room* currentRoom);
 void moveEast(Player* player, Room* currentRoom);
-void pickUpItem(Player* player, Item item);
+void pickUpItem(Player* player, Item* item);
 
 #endif

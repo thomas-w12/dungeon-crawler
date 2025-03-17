@@ -23,6 +23,6 @@ void moveEast(Player* player, Room* currentRoom){
 
 }
 
-void pickUpItem(Player* player, Item item){
+void pickUpItem(Player* player, Item* item){
 
 }
