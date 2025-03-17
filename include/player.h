@@ -20,7 +20,7 @@ void moveSouth(Player* player, Room* currentRoom);
 void moveWest(Player* player, Room* currentRoom);
 void moveEast(Player* player, Room* currentRoom);
 void pickUpItem(Player* player, Item item);
-void loadPlayerState(FILE* f, Player* player);
-void savePlayerState(FILE* f, Player player);
+int savePlayerState(const char* playerStateFPath, Player* player);
+int loadPlayerState(const char* playerStateFPath, Player* player);
 
 #endif
