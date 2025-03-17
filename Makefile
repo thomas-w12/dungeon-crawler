@@ -1,18 +1,24 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude
+CFLAGS = -Wall -Wshadow -Wextra -Iinclude
+EXE = dungeon_crawler
+SRCS = src/main.c src/room.c src/item.c src/player.c
+OBJS = $(SRCS:%.c=%.o)
 TEST_FLAGS =
 
-all: dungeon_crawler
+all: $(EXE)
 
-dungeon_crawler: src/main.c src/game_loop.c
-	$(CC) $(CFLAGS) $^ -o $@
+$(EXE): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(EXE)
+
+.c.o:
+	$(CC) $(CFLAGS) -c $*.c
 
 test: tests/sample_test.c
 	$(CC) $(CFLAGS) $(TEST_FLAGS) $^ -o test_runner
 	./test_runner
 
 clean:
-	rm -f dungeon_crawler *.o
+	rm -f $(EXE) *.o
 
 run:
-	./dungeon_crawler
+	./$(EXE)
