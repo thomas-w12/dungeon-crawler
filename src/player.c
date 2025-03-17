@@ -7,7 +7,8 @@
 
 
 void moveNorth(Player* player, Room* currentRoom){
-     
+    (void)player;
+    (void)currentRoom;
 }
 
 void moveSouth(Player* player, Room* currentRoom){

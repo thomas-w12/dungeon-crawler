@@ -19,7 +19,7 @@ typedef struct Item{
     char description[20];
 } Item;
 
-Item Item_construct(int ID);
+Item* Item_construct(int ID);
 void displayItem(Item item);
 void displayItems(Item items[], int itemCount);
 // void addItemToRoom(Room* room, Item item);

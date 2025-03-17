@@ -6,15 +6,18 @@
 #include "../include/item.h"
 
 
-Item Item_construct(int ID){
-    Item item;
-    item.ID = ID;
-    
-    strcpy(item.type, ITEM_TYPES[ID]);
-    strcpy(item.description, ITEM_DESCRIPTIONS[ID]);
-
-    return item;
+Item* Item_construct(int ID) {
+    Item* newItem = (Item*)malloc(sizeof(Item));
+    if (!newItem) {
+        printf("Error: Could not allocate memory for Item.\n");
+        return NULL;
+    }
+    newItem->ID = ID;
+    strcpy(newItem->type, ITEM_TYPES[ID]);
+    strcpy(newItem->description, ITEM_DESCRIPTIONS[ID]);
+    return newItem;
 }
+
 
 void displayItem(Item item){
     printf("\nItem - ID: %d\tType: %s\tDescription: %s", item.ID, item.type, item.description);
