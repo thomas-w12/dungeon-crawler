@@ -115,7 +115,7 @@ Room* parseRoom(char* line, Room* rooms[]){
             case 7:
             case 8:
             case 9: // There are max 3 items in the room
-                items[itemCount] = Item_construct(strtol(token, NULL, 10));
+                items[itemCount] = *Item_construct(strtol(token, NULL, 10));
                 itemCount++;
                 break;
         }
@@ -130,48 +130,48 @@ Room* parseRoom(char* line, Room* rooms[]){
     return Room_construct(ID, name, description, north, south, west, east, items, itemCount);
 }
 
-int loadLayout(char* layoutStateFPath, Room* rooms[], int* roomCount){
-    FILE* fp = fopen(layoutStateFPath, "r");
+// int loadLayout(char* layoutStateFPath, Room* rooms[], int* roomCount){
+//     FILE* fp = fopen(layoutStateFPath, "r");
 
-    if (fp == NULL){
-        perror("Error openning layout file");
-        return EXIT_FAILURE;
-    }
+//     if (fp == NULL){
+//         perror("Error openning layout file");
+//         return EXIT_FAILURE;
+//     }
 
-    // Read the number of rooms from the file (first line)
-    fscanf(fp, "%d", roomCount);
-    // printf("\nRoom count: %d", *roomCount);
+//     // Read the number of rooms from the file (first line)
+//     fscanf(fp, "%d", roomCount);
+//     // printf("\nRoom count: %d", *roomCount);
 
-    // allocate memory for roomCount rooms
-    for (int i=0; i<*roomCount;i++){
-        Room* room = (Room*)malloc(sizeof(Room));
-        if (room == NULL){
-            printf("\nCould not create room");
-            rooms[i] = NULL; // Not sure about this part (It is supposed to fill every space of failed allocation with null)
-            continue;
-        }
-        rooms[i] = room;
-    }
+//     // allocate memory for roomCount rooms
+//     for (int i=0; i<*roomCount;i++){
+//         Room* room = (Room*)malloc(sizeof(Room));
+//         if (room == NULL){
+//             printf("\nCould not create room");
+//             rooms[i] = NULL; // Not sure about this part (It is supposed to fill every space of failed allocation with null)
+//             continue;
+//         }
+//         rooms[i] = room;
+//     }
 
-    int eof = 0;
-    int index = 0;
-    while (eof != EOF){
-        char line[MAX_ROOM_LINE_LEN];
-        if (fgets(line, MAX_ROOM_LINE_LEN, fp) != NULL){
-            // printf("\n%s", line);
-            Room* room = parseRoom(line, rooms);
-            if (room != NULL){
-                rooms[index] = room;
-                index ++;
-            }
-        }else{
-            eof = EOF;
-        }
-    }
+//     int eof = 0;
+//     int index = 0;
+//     while (eof != EOF){
+//         char line[MAX_ROOM_LINE_LEN];
+//         if (fgets(line, MAX_ROOM_LINE_LEN, fp) != NULL){
+//             // printf("\n%s", line);
+//             Room* room = parseRoom(line, rooms);
+//             if (room != NULL){
+//                 rooms[index] = room;
+//                 index ++;
+//             }
+//         }else{
+//             eof = EOF;
+//         }
+//     }
 
-    fclose(fp);
-    return EXIT_SUCCESS;
-}
+//     fclose(fp);
+//     return EXIT_SUCCESS;
+// }
 
 void serializeRoom(Room* room, char* line){
     // Or just do fprintf(f, "%d", room->ID);
@@ -234,28 +234,28 @@ void serializeRoom(Room* room, char* line){
     // printf("\n%s", line);
 }
 
-int saveLayout(char* layoutStateFPath, Room* rooms[], int roomCount){
-    FILE* f = fopen(layoutStateFPath, "w");
+// int saveLayout(char* layoutStateFPath, Room* rooms[], int roomCount){
+//     FILE* f = fopen(layoutStateFPath, "w");
 
-    if (f == NULL){
-        perror("Error openning layout file");
-        return EXIT_FAILURE;
-    }
-    // The first line is the number of rooms;
-    fprintf(f, "%d\n", roomCount);
+//     if (f == NULL){
+//         perror("Error openning layout file");
+//         return EXIT_FAILURE;
+//     }
+//     // The first line is the number of rooms;
+//     fprintf(f, "%d\n", roomCount);
 
-    for (int i=0; i<roomCount; i++){
-        char line[MAX_ROOM_LINE_LEN] = "";
-        serializeRoom(rooms[i], line);
-        // printf("\n%s", line);
-        fprintf(f, "%s", line);
-    }
+//     for (int i=0; i<roomCount; i++){
+//         char line[MAX_ROOM_LINE_LEN] = "";
+//         serializeRoom(rooms[i], line);
+//         // printf("\n%s", line);
+//         fprintf(f, "%s", line);
+//     }
 
-    // fseek(f, 0, SEEK_SET);  // (Ignore) Move to beginning after every write before reading (because file is opened in w+ mode)
-    fclose(f);
-    printf("\nSaved layout");
-    return EXIT_SUCCESS;
-}
+//     // fseek(f, 0, SEEK_SET);  // (Ignore) Move to beginning after every write before reading (because file is opened in w+ mode)
+//     fclose(f);
+//     printf("\nSaved layout");
+//     return EXIT_SUCCESS;
+// }
 
 void generateLayout(Room* rooms[], int* roomCount){
 
@@ -284,6 +284,10 @@ void displayRooms(Room* rooms[], int roomCount){
 }
 
 void exploreDungeon(Room* currentRoom){
+    if (currentRoom == NULL) {
+        printf("You have reached a dead end!\n");
+        return;
+    }
     displayRoom(currentRoom);
 
     char choice;
@@ -335,6 +339,7 @@ void exploreDungeon(Room* currentRoom){
 
     // Reply with the id of the item you would like to collect
 }
+
 
 void freeRooms(Room* rooms[], int* roomCount){
     if (*roomCount == 0){

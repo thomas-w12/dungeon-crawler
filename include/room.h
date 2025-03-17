@@ -27,8 +27,8 @@ Room* Room_construct(int ID, char* name, char* description, Room* north, Room* s
 Room* parseRoom(char* line, Room* rooms[]);
 void serializeRoom(Room* room, char* line);
 void generateLayout(Room* rooms[], int* roomCount);
-int loadLayout(char* layoutStateFPath, Room* rooms[], int* roomCount);
-int saveLayout(char* layoutStateFPath, Room* rooms[], int roomCount);
+int saveLayout(const char* layoutStateFPath, Room* rooms[], int roomCount);
+int loadLayout(const char* layoutStateFPath, Room* rooms[], int* roomCount);
 void displayRoom(Room* room);
 void displayRooms(Room* rooms[], int roomCount);
 void exploreDungeon(Room* currentRoom);
