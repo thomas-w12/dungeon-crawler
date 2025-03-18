@@ -2,7 +2,10 @@
 #define ROOM_H
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "item.h"
+#include "command_parser.h"
 
 #define MAX_ROOMS 10
 #define MAX_ROOM_LINE_LEN 100 // Max length of the room line stored in the layout.txt
@@ -31,7 +34,6 @@ int saveLayout(const char* layoutStateFPath, Room* rooms[], int roomCount);
 int loadLayout(const char* layoutStateFPath, Room* rooms[], int* roomCount);
 void displayRoom(Room* room);
 void displayRooms(Room* rooms[], int roomCount);
-void exploreDungeon(Room* currentRoom);
 void freeRoomConnections(int** roomConnections, int roomCount);
 void freeRooms(Room* rooms[], int* roomCount);
 

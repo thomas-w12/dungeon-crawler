@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     rooms[roomCount] = room;
     roomCount++;
 
-    Player* player = Player_construct("Player1", 0, 100, 0);
+    Player* player = Player_construct("Player1", 0, 100, 0, room);
     displayPlayer(player);
     pickUpItem(player, item1);
     pickUpItem(player, item2);

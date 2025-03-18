@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "../include/command_parser.h"
 
 int parse_movement_command() {
@@ -23,4 +19,35 @@ int parse_movement_command() {
     } else {
         return -1; // Invalid command
     }
+}
+
+int parse_action_command() {
+    char* input[100];
+    printf("\nWhat would you like to do?\nP - pick up item\nU - use item\nD - drop item\nS - show inventory\nM - move to another room\nQ - quit\n");
+    if (fgets(input, sizeof(input), stdin) == NULL) {
+        return -1; // Error reading input
+    }
+    if (strcmp(input, "Q\n") == 0 || strcmp(input, "q\n") == 0) {
+        return EXIT;
+    } else if (strcmp(input, "P\n") == 0 || strcmp(input, "p\n") == 0) {
+        return PICKUP;
+    } else if (strcmp(input, "U\n") == 0 || strcmp(input, "u\n") == 0) {
+        return USE;
+    } else if (strcmp(input, "D\n") == 0 || strcmp(input, "d\n") == 0) {
+        return DROP;
+    } else if (strcmp(input, "S\n") == 0 || strcmp(input, "s\n") == 0) {
+        return SHOW;
+    } else if (strcmp(input, "M\n") == 0 || strcmp(input, "m\n") == 0) {
+        return MOVE;
+    } else {
+        return -1; // Invalid command
+    }
+}
+
+int parse_item_command() {
+    char* input[100];
+    if (fgets(input, sizeof(input), stdin) == NULL) {
+        return -1; // Error reading input
+    }
+    return strtol(input, NULL, 10);
 }

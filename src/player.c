@@ -6,7 +6,7 @@
 #include "../include/player.h"
 
 
-Player* Player_construct(char* name, int currentRoom, int health, int score){
+Player* Player_construct(char* name, int currentRoom, int health, int score, Room* currentRoomPtr){
     Player* player = (Player*)malloc(sizeof(Player));
     if (player == NULL){
         printf("\nCould not create player");
@@ -19,6 +19,12 @@ Player* Player_construct(char* name, int currentRoom, int health, int score){
     player->score = score;
     player->itemsCount = 0;
 
+    for (int i=0; i<MAX_PLAYER_ITEMS; i++){
+        player->inventory[i] = NULL;
+    }
+
+    player->currentRoomPtr = currentRoomPtr;
+
     return player;
 }
 
@@ -29,7 +35,7 @@ void displayPlayer(Player* player){
 
 void displayPlayerInventory(Player* player){
     printf("\nItems in inventory (%d): ", player->itemsCount);
-    displayItems(player->inventory, player->itemsCount);
+    displayItems(player->inventory, player->itemsCount, MAX_PLAYER_ITEMS);
 }
 
 void updatePlayerRoom(Player* player, Room* currentRoom){
@@ -44,6 +50,39 @@ void pickUpItem(Player* player, Item* item){
 
     player->inventory[player->itemsCount] = item;
     player->itemsCount++;
+
+    // Remove item from room, make sure item that is passed is in the current room
+    for (int i=0; i<player->currentRoomPtr->itemsCount; i++){
+        if (player->currentRoomPtr->items[i] == item){
+            player->currentRoomPtr->items[i] = NULL;
+            player->currentRoomPtr->itemsCount--;
+            break;
+        }
+    }
+}
+
+void dropItem(Player* player, Item* item){
+    if (player->itemsCount == 0){
+        printf("\nInventory is empty. Cannot drop item.");
+        return;
+    }
+
+    for (int i=0; i<player->itemsCount; i++){
+        if (player->inventory[i] == item){
+            player->inventory[i] = NULL;
+            player->itemsCount--;
+            break;
+        }
+    }
+
+    // Add item to room
+    for (int i=0; i<MAX_ITEMS_IN_ROOM; i++){
+        if (player->currentRoomPtr->items[i] == NULL){
+            player->currentRoomPtr->items[i] = item;
+            player->currentRoomPtr->itemsCount++;
+            break;
+        }
+    }
 }
 
 void freePlayer(Player* player){

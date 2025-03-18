@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "../include/room.h"
-#include "../include/player.h"
-#include "../include/item.h"
-#include "../include/command_parser.h"
 
 void Room_destroy(Room* room){
     // find all its connections and close the space between them [(or maybe set to null)]
@@ -269,7 +263,7 @@ void displayRoom(Room* room){
     }
     printf("\nRoom - ID: %d\tName: %s\tDescription: %s", room->ID, room->name, room->description);
     printf("\nItems in room (%d): ", room->itemsCount);
-    displayItems(room->items, room->itemsCount);
+    displayItems(room->items, room->itemsCount, MAX_ITEMS_IN_ROOM);
     printf("\n");
 }
 
@@ -284,59 +278,7 @@ void displayRooms(Room* rooms[], int roomCount){
     }
 }
 
-void exploreDungeon(Room* currentRoom){
-    // if (currentRoom == NULL) {
-    //     printf("You have reached a dead end!\n");
-    //     return;
-    // }
-    printf("\n");
-    displayRoom(currentRoom);
 
-    int choice = parse_movement_command();
-    switch(choice){
-        case NORTH:
-            if (currentRoom->north == NULL){
-                printf("\nThere is no path on the north.");
-                exploreDungeon(currentRoom);
-                break;
-            }
-            exploreDungeon(currentRoom->north);
-            break;
-        case SOUTH:
-            if (currentRoom->south == NULL){
-                printf("\nThere is no path on the south.");
-                exploreDungeon(currentRoom);
-                return;
-            }
-            exploreDungeon(currentRoom->south);
-            break;
-        case WEST:
-            if (currentRoom->west == NULL){
-                printf("\nThere is no path on the west.");
-                exploreDungeon(currentRoom);
-                return;
-            }
-            exploreDungeon(currentRoom->west);
-            break;
-        case EAST:
-            if (currentRoom->east == NULL){
-                printf("\nThere is no path on the east.");
-                exploreDungeon(currentRoom);
-                return;
-            }
-            exploreDungeon(currentRoom->east);
-            break;
-        case EXIT:
-            printf("\nExiting dungeon");
-            return;
-        default:
-            printf("\nInvalid choice!\nEnter a valid choice");
-            exploreDungeon(currentRoom);
-            break;
-    }
-
-    // Reply with the id of the item you would like to collect
-}
 
 
 void freeRooms(Room* rooms[], int* roomCount){

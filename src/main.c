@@ -4,9 +4,11 @@
 #include "../include/room.h"
 #include "../include/player.h"
 #include "../include/item.h"
+#include "../include/dungeon.h"
 
 
 int main() {
+
     int roomCount = 0;
     Room* rooms[MAX_ROOMS];
     
@@ -23,6 +25,8 @@ int main() {
     
     Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, itemsArrRoom1, itemsLengthRoom1);
     Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, 0);
+
+    Player* player = Player_construct("Player", 0, 100, 0, room);
 
 
     if (room != NULL){
@@ -44,7 +48,7 @@ int main() {
    
     displayRooms(rooms, roomCount);
     
-    exploreDungeon(room);
+    exploreDungeon(room, player);
 
     freeRooms(rooms, &roomCount);
     freeItems(itemsArrRoom1, &itemsLengthRoom1);
