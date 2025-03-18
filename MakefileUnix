@@ -7,15 +7,15 @@ TESTDIR = tests
 OBJDIR = build
 SRCS = $(wildcard $(SRCDIR)/*.c)
 TEST_SRCS = $(wildcard $(TESTDIR)/*.c)
-OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
+OBJS = $(filter-out $(OBJDIR)/main.o, $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS)))
 TEST_OBJS = $(patsubst $(TESTDIR)/%.c, $(OBJDIR)/%.o, $(TEST_SRCS))
 
 VPATH = $(SRCDIR) $(TESTDIR)
 
 all: $(EXE)
 
-$(EXE): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(EXE)
+$(EXE): $(OBJS) $(OBJDIR)/main.o
+	$(CC) $(CFLAGS) $(OBJS) $(OBJDIR)/main.o -o $(EXE)
 
 $(OBJDIR)/%.o: %.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -23,9 +23,15 @@ $(OBJDIR)/%.o: %.c | $(OBJDIR)
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
-test: $(TEST_OBJS)
-	$(CC) $(CFLAGS) $(TEST_OBJS) -o $(OBJDIR)/test_runner
-	$(OBJDIR)/test_runner
+player_test: $(OBJDIR)/player_test.o $(OBJS)
+	$(CC) $(CFLAGS) $(OBJDIR)/player_test.o $(OBJS) -o $(OBJDIR)/player_test_runner
+	$(OBJDIR)/player_test_runner
+
+sample_test: $(OBJDIR)/sample_test.o $(OBJS)
+	$(CC) $(CFLAGS) $(OBJDIR)/sample_test.o $(OBJS) -o $(OBJDIR)/sample_test_runner
+	$(OBJDIR)/sample_test_runner
+
+test: player_test sample_test
 
 clean:
 	rm -rf $(EXE) $(OBJDIR)
