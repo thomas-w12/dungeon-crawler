@@ -2,7 +2,7 @@
 #define ITEM_H
 
 #define ITEM_TYPES (const char*[]){"sword", "stone", "shield", "ladder"}
-#define ITEM_DESCRIPTIONS (const char*[]){"Fight off monsters", "Stone the giant", "Shield agains trap", "Climb out of trap"}
+#define ITEM_DESCRIPTIONS (const char*[]){"Fight off monsters", "Stone the giant", "Shield against trap", "Climb out of trap"}
 
 typedef struct Item{
     // Item type and description depends on the item id
