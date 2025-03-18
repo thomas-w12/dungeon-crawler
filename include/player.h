@@ -17,10 +17,12 @@ typedef struct Player {
     int itemsCount;
 } Player;
 
-void moveNorth(Player* player, Room* currentRoom);
-void moveSouth(Player* player, Room* currentRoom);
-void moveWest(Player* player, Room* currentRoom);
-void moveEast(Player* player, Room* currentRoom);
+Player* Player_construct(char* name, int currentRoom, int health, int score);
+void displayPlayer(Player* player);
+void displayPlayerInventory(Player* player);
+void updatePlayerRoom(Player* player, Room* currentRoom);
 void pickUpItem(Player* player, Item* item);
+
+void freePlayer(Player* player);
 
 #endif
