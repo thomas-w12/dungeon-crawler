@@ -4,24 +4,6 @@
 #include "../include/room.h"
 #include "../include/player.h"
 #include "../include/item.h"
-#include "../include/game_loop.h"
-
-void test(int** arr){
-    arr[0] = malloc(3 * sizeof(int));  // Allocate memory
-    arr[0][0] = 1;
-    arr[0][1] = 2;
-    arr[0][2] = 3;
-    printf("%d %d %d", arr[0][1], arr[0][1], arr[0][2]);
-
-    // test(roomConnections);
-    // printf("%d %d %d", roomConnections[0][1], roomConnections[0][1], roomConnections[0][2]);
-}
-
-void testItem(Item* items[], int itemCount){
-    for (int i = 0; i<itemCount; i++){
-        displayItem(items[i]);
-    }
-}
 
 
 int main() {
@@ -36,11 +18,11 @@ int main() {
     Item* item3 = Item_construct(2);
     Item* item4 = Item_construct(3);
     
-    Item* itemsArr[] = {item1, item2, item3, item4}; 
-    int itemsLength = sizeof(itemsArr) / sizeof(Item*);  
+    Item* itemsArrRoom1[] = {item1, item2, item3, item4}; 
+    int itemsLengthRoom1 = sizeof(itemsArrRoom1) / sizeof(Item*);  
     
-    Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, itemsArr, itemsLength);
-    Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, itemsArr, 0);
+    Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, itemsArrRoom1, itemsLengthRoom1);
+    Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, 0);
 
 
     if (room != NULL){
@@ -62,11 +44,10 @@ int main() {
    
     displayRooms(rooms, roomCount);
     
-    // exploreDungeon(room);
-    // game_loop();
+    exploreDungeon(room);
 
     freeRooms(rooms, &roomCount);
-    freeItems(itemsArr, &itemsLength);
+    freeItems(itemsArrRoom1, &itemsLengthRoom1);
 
     return EXIT_SUCCESS;
 }

@@ -4,7 +4,7 @@
 #include "../include/room.h"
 #include "../include/player.h"
 #include "../include/item.h"
-
+#include "../include/command_parser.h"
 
 void Room_destroy(Room* room){
     // find all its connections and close the space between them [(or maybe set to null)]
@@ -267,9 +267,10 @@ void displayRoom(Room* room){
         printf("\nRoom does not exist");
         return;
     }
-    printf("\nRoom - ID: %d\tName: %s\tDesccription: %s", room->ID, room->name, room->description);
+    printf("\nRoom - ID: %d\tName: %s\tDescription: %s", room->ID, room->name, room->description);
     printf("\nItems in room (%d): ", room->itemsCount);
     displayItems(room->items, room->itemsCount);
+    printf("\n");
 }
 
 void displayRooms(Room* rooms[], int roomCount){
@@ -291,12 +292,9 @@ void exploreDungeon(Room* currentRoom){
     printf("\n");
     displayRoom(currentRoom);
 
-    char choice;
-    printf("\nWhere would you like to go?\nN - go north\nS - go south\nW - go west\nE - go east\n");
-    scanf(" %c", &choice);
+    int choice = parse_movement_command();
     switch(choice){
-        case 'n':
-        case 'N':
+        case NORTH:
             if (currentRoom->north == NULL){
                 printf("\nThere is no path on the north.");
                 exploreDungeon(currentRoom);
@@ -304,8 +302,7 @@ void exploreDungeon(Room* currentRoom){
             }
             exploreDungeon(currentRoom->north);
             break;
-        case 's':
-        case 'S':
+        case SOUTH:
             if (currentRoom->south == NULL){
                 printf("\nThere is no path on the south.");
                 exploreDungeon(currentRoom);
@@ -313,8 +310,7 @@ void exploreDungeon(Room* currentRoom){
             }
             exploreDungeon(currentRoom->south);
             break;
-        case 'w':
-        case 'W':
+        case WEST:
             if (currentRoom->west == NULL){
                 printf("\nThere is no path on the west.");
                 exploreDungeon(currentRoom);
@@ -322,8 +318,7 @@ void exploreDungeon(Room* currentRoom){
             }
             exploreDungeon(currentRoom->west);
             break;
-        case 'e':
-        case 'E':
+        case EAST:
             if (currentRoom->east == NULL){
                 printf("\nThere is no path on the east.");
                 exploreDungeon(currentRoom);
@@ -331,6 +326,9 @@ void exploreDungeon(Room* currentRoom){
             }
             exploreDungeon(currentRoom->east);
             break;
+        case EXIT:
+            printf("\nExiting dungeon");
+            return;
         default:
             printf("\nInvalid choice!\nEnter a valid choice");
             exploreDungeon(currentRoom);

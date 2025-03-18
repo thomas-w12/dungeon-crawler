@@ -2,27 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../include/game_loop.h"
+#include "../include/command_parser.h"
 
-void game_loop() {
-    char input[100];
-    while (1) {
-        printf("\nEnter a command: ");
-        if (fgets(input, sizeof(input), stdin) != NULL) {
-            printf("You entered: %s", input); // for debugging
-            int command = parse_command(input);
-            printf("Command: %d\n", command); // for debugging
-            if (command == EXIT) {
-                break;
-            }
-        } else {
-            printf("Error reading input.");
-        }
-        printf("You entered: %s\n", input);
+int parse_movement_command() {
+    char* input[100];
+    printf("\nWhere would you like to go?\nN - go north\nS - go south\nW - go west\nE - go east\nQ - quit\n");
+    if (fgets(input, sizeof(input), stdin) == NULL) {
+        return -1; // Error reading input
     }
-}
-
-int parse_command(char *input) {
     if (strcmp(input, "Q\n") == 0 || strcmp(input, "q\n") == 0) {
         return EXIT;
     } else if (strcmp(input, "N\n") == 0 || strcmp(input, "n\n") == 0) {
