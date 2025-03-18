@@ -9,10 +9,6 @@
 #define EAST 3
 #define WEST 4
 
-void game_loop();
-
-int parse_command(char *input);
-
-void execute_command(int command, Room *room);
+int parse_movement_command();
 
 #endif
