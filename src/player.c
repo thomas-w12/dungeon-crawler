@@ -99,7 +99,7 @@ void increasePlayerScore(Player* player, int score){
 }
 
 void freePlayer(Player* player){
-    freeItems(player->inventory, &player->itemsCount);
+    // freeItems(player->inventory, &player->itemsCount);
     free(player);
 }
 

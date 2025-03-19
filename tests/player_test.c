@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     saveLayout(layoutStateFPath, rooms, roomCount);
     savePlayerState(playerStateFPath, player);
 
-    //freePlayer(player);
-    // freeItems(itemsArrRoom1, &itemsLengthRoom1);
-    // freeRooms(rooms, &roomCount);
+    freeItems(itemsArrRoom1, &itemsLengthRoom1);
+    freePlayer(player);
+    freeRooms(rooms, &roomCount);
 }

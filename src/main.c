@@ -13,7 +13,7 @@ int main() {
     Room* rooms[MAX_ROOMS];
     
     char layoutStateFPath[] = {"saved_games/layoutState.txt"};
-    // char playerStateFPath[] = {"saved_games/playerState.txt"};
+    char playerStateFPath[] = {"saved_games/playerState.txt"};
 
     Item* item1 = Item_construct(0);
     Item* item2 = Item_construct(1);
@@ -43,12 +43,17 @@ int main() {
     }
     
     saveLayout(layoutStateFPath, rooms, roomCount);
-    
     loadLayout(layoutStateFPath, rooms, &roomCount);
+
+    savePlayerState(playerStateFPath, player);
+    loadPlayerState(playerStateFPath, player);
    
     displayRooms(rooms, roomCount);
     
     exploreDungeon(room, player);
+
+    saveLayout(layoutStateFPath, rooms, roomCount);
+    savePlayerState(playerStateFPath, player);
 
     freeRooms(rooms, &roomCount);
     freeItems(itemsArrRoom1, &itemsLengthRoom1);

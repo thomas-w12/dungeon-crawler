@@ -40,9 +40,9 @@ void freeItem(Item* item){
     free(item);
 }
 
-void freeItems(Item* items[], int* itemsCoumt){
-    for (int i=0; i<*itemsCoumt; i++){
+void freeItems(Item* items[], int* itemsCount){
+    for (int i=0; i<*itemsCount; i++){
         free(items[i]);
     }
-    *itemsCoumt = 0;
+    *itemsCount = 0;
 }
