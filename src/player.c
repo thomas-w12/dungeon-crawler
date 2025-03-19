@@ -86,6 +86,18 @@ void dropItem(Player* player, Item* item){
     }
 }
 
+void decreasePlayerHealth(Player* player, int damage){
+    player->health -= damage;
+}
+
+void increasePlayerHealth(Player* player, int health){
+    player->health += health;
+}
+
+void increasePlayerScore(Player* player, int score){
+    player->score += score;
+}
+
 void freePlayer(Player* player){
     freeItems(player->inventory, &player->itemsCount);
     free(player);

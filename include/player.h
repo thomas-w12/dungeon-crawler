@@ -23,6 +23,9 @@ void displayPlayerInventory(Player* player);
 void updatePlayerRoom(Player* player, Room* currentRoom);
 void pickUpItem(Player* player, Item* item);
 void dropItem(Player* player, Item* item);
+void decreasePlayerHealth(Player* player, int damage);
+void increasePlayerHealth(Player* player, int health);
+void increasePlayerScore(Player* player, int score);
 void freePlayer(Player* player);
 
 #endif
