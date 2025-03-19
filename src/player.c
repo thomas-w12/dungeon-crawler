@@ -40,6 +40,7 @@ void displayPlayerInventory(Player* player){
 
 void updatePlayerRoom(Player* player, Room* currentRoom){
     player->currentRoom = currentRoom->ID;
+    player->currentRoomPtr = currentRoom;
 }
 
 void pickUpItem(Player* player, Item* item){

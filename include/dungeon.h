@@ -8,6 +8,9 @@
 #include "player.h"
 #include "command_parser.h"
 
+int roomInteraction(Room* currentRoom, Player* player);
+int moveRooms(Room* currentRoom, Player* player);
+
 void exploreDungeon(Room* currentRoom, Player* player);
 
 #endif

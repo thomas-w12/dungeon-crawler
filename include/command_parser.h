@@ -11,15 +11,12 @@
 #define SOUTH 2
 #define EAST 3
 #define WEST 4
-#define PICKUP 5
-#define USE 6
-#define DROP 7
-#define SHOW 8
-#define MOVE 9
+#define PICKUP 6
+#define USE 7
+#define DROP 8
+#define INVENTORY 9
 
-int parse_movement_command();
-
-int parse_action_command();
+int parse_room_command();
 
 int parse_item_command();
 
