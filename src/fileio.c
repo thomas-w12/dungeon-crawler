@@ -23,8 +23,10 @@ int saveLayout(const char* layoutStateFPath, Room* rooms[], int roomCount) {
                 (room->west ? room->west->ID : DNE),
                 (room->east ? room->east->ID : DNE));
 
-        for (int j = 0; j < room->itemsCount; j++) {
-            fprintf(file, "%d,", room->items[j]->ID);
+        for (int j = 0; j < MAX_ITEMS_IN_ROOM; j++) {
+            if (room->items[j] != NULL) {
+                fprintf(file, "%d,", room->items[j]->ID);
+            }
         }
 
         fprintf(file, "\n");
@@ -87,9 +89,11 @@ int savePlayerState(const char* playerStateFPath, Player* player) {
         return EXIT_FAILURE;
     }
 
-    fprintf(file, "%s,%d,", player->name, player->currentRoom);
-    for (int i = 0; i < player->itemsCount; i++) {
-        fprintf(file, "%d,", player->inventory[i]->ID);
+    fprintf(file, "%s,%d,%d,%d,", player->name, player->currentRoom, player->health, player->score);
+    for (int i = 0; i < MAX_PLAYER_ITEMS; i++) {
+        if (player->inventory[i] != NULL) {
+            fprintf(file, "%d,", player->inventory[i]->ID);
+        }
     }
 
     fprintf(file, "\n");
@@ -105,7 +109,7 @@ int loadPlayerState(const char* playerStateFPath, Player* player) {
         return EXIT_FAILURE;
     }
 
-    fscanf(file, "%9[^,],%d,", player->name, &player->currentRoom);
+    fscanf(file, "%9[^,],%d,%d,%d,", player->name, &player->currentRoom, &player->health, &player->score);
     player->itemsCount = 0;
 
     while (fgetc(file) != '\n' && !feof(file)) {

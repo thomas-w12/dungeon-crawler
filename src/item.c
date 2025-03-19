@@ -20,16 +20,18 @@ Item* Item_construct(int ID) {
 
 
 void displayItem(Item* item){
-    printf("\nItem - ID: %d\tType: %s\tDescription: %s", item->ID, item->type, item->description);
+    if (item != NULL) {
+        printf("\nItem - ID: %d\tType: %s\tDescription: %s", item->ID, item->type, item->description);
+    }
 }
 
-void displayItems(Item* items[], int itemCount){
+void displayItems(Item* items[], int itemCount, int maxItems){
     if (itemCount == 0){
         printf("There are no items!");
         return;
     }
 
-    for (int i=0; i<itemCount;i++){
+    for (int i=0; i<maxItems; i++){
         displayItem(items[i]);
     }
 }
@@ -38,9 +40,9 @@ void freeItem(Item* item){
     free(item);
 }
 
-void freeItems(Item* items[], int* itemsCoumt){
-    for (int i=0; i<*itemsCoumt; i++){
+void freeItems(Item* items[], int* itemsCount){
+    for (int i=0; i<*itemsCount; i++){
         free(items[i]);
     }
-    *itemsCoumt = 0;
+    *itemsCount = 0;
 }

@@ -4,23 +4,28 @@
 #include <stdio.h>
 #include "item.h"
 #include "room.h"
-// struct Room;
 
 #define MAX_PLAYER_ITEMS 3
 
 typedef struct Player {
     char name[10]; // Tell player to enter name at begining. Max length of about 10 characters
     int currentRoom; //ID of current room
+    Room* currentRoomPtr; // Pointer to current room
     int health; // Health bar
     int score;
     Item* inventory[MAX_PLAYER_ITEMS]; // List of items the player has
     int itemsCount;
 } Player;
 
-void moveNorth(Player* player, Room* currentRoom);
-void moveSouth(Player* player, Room* currentRoom);
-void moveWest(Player* player, Room* currentRoom);
-void moveEast(Player* player, Room* currentRoom);
+Player* Player_construct(char* name, int currentRoom, int health, int score, Room* currentRoomPtr);
+void displayPlayer(Player* player);
+void displayPlayerInventory(Player* player);
+void updatePlayerRoom(Player* player, Room* currentRoom);
 void pickUpItem(Player* player, Item* item);
+void dropItem(Player* player, Item* item);
+void decreasePlayerHealth(Player* player, int damage);
+void increasePlayerHealth(Player* player, int health);
+void increasePlayerScore(Player* player, int score);
+void freePlayer(Player* player);
 
 #endif

@@ -4,14 +4,16 @@
 #include "../include/room.h"
 #include "../include/player.h"
 #include "../include/item.h"
+#include "../include/dungeon.h"
 
 
 int main() {
+
     int roomCount = 0;
     Room* rooms[MAX_ROOMS];
     
     char layoutStateFPath[] = {"saved_games/layoutState.txt"};
-    // char playerStateFPath[] = {"saved_games/playerState.txt"};
+    char playerStateFPath[] = {"saved_games/playerState.txt"};
 
     Item* item1 = Item_construct(0);
     Item* item2 = Item_construct(1);
@@ -23,6 +25,8 @@ int main() {
     
     Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, itemsArrRoom1, itemsLengthRoom1);
     Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, 0);
+
+    Player* player = Player_construct("Player", 0, 100, 0, room);
 
 
     if (room != NULL){
@@ -39,12 +43,17 @@ int main() {
     }
     
     saveLayout(layoutStateFPath, rooms, roomCount);
-    
     loadLayout(layoutStateFPath, rooms, &roomCount);
+
+    savePlayerState(playerStateFPath, player);
+    loadPlayerState(playerStateFPath, player);
    
     displayRooms(rooms, roomCount);
     
-    exploreDungeon(room);
+    exploreDungeon(room, player);
+
+    saveLayout(layoutStateFPath, rooms, roomCount);
+    savePlayerState(playerStateFPath, player);
 
     freeRooms(rooms, &roomCount);
     freeItems(itemsArrRoom1, &itemsLengthRoom1);

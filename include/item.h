@@ -13,7 +13,7 @@ typedef struct Item{
 
 Item* Item_construct(int ID);
 void displayItem(Item* item);
-void displayItems(Item* items[], int itemCount);
+void displayItems(Item* items[], int itemCount, int maxItems);
 void freeItem(Item* item);
 void freeItems(Item* items[], int* itemsCount);
 // void addItemToRoom(Room* room, Item item);
