@@ -1,100 +1,103 @@
 #include "../include/dungeon.h"
 
-void exploreDungeon(Room* currentRoom, Player* player) {
-    while (1) {
+void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom) {
+    // Update player's current room
+    updatePlayerRoom(player, currentRoom);
+    if (isNewRoom == true){
         // Display current room
         displayRoom(currentRoom);
-        // Update player's current room
-        updatePlayerRoom(player, currentRoom);
+        //add roomId to path
 
-        int choice = parse_room_command();
+        // int choice = parse_room_command();
+        printf("\nWhat would you like to do?\nP - pick up item\nU - use item\nD - drop item\nI - show inventory\nN - go north\nS - go south\nW - go west\nE - go east\nQ - quit\n");
+    }
 
-        switch (choice) {
-            case INVENTORY:
-                displayPlayerInventory(player);
-                printf("\n");
-                // continue in same room
-                continue;
-            case PICKUP:
-                printf("\nEnter the item ID to pick up:\n");
-                int pickupItemID = parse_item_command();
-                Item* pickupTargetItem = NULL;
+    char choice;
+    scanf(" %c", &choice);
+    choice = (char) toupper((int) choice);
+    printf("\nChoice: %c", choice);
 
-                // Find the item with matching ID in the current room
-                for (int i = 0; i < currentRoom->itemsCount; i++) {
-                    if (currentRoom->items[i] != NULL 
-                        && currentRoom->items[i]->ID == pickupItemID) {
-                            pickupTargetItem = currentRoom->items[i];
-                        break;
-                    }
-                }
-                if (pickupTargetItem == NULL) {
-                    printf("\nInvalid item ID\n");
-                    continue;
-                }
-                pickUpItem(player, pickupTargetItem);
-                continue;
-            case USE:
-                printf("\nNot implemented yet");
-                continue;
-            case DROP:
-                printf("\nEnter the item ID to drop:\n");
-                int dropItemID = parse_item_command();
-                Item* dropTargetItem = NULL;
-
-                // Find the item with matching ID in the player's inventory
-                for (int i = 0; i < player->itemsCount; i++) {
-                    if (player->inventory[i] != NULL 
-                        && player->inventory[i]->ID == dropItemID) {
-                            dropTargetItem = player->inventory[i];
-                        break;
-                    }
-                }
-                if (dropTargetItem == NULL) {
-                    printf("\nInvalid item ID\n");
-                    continue;
-                }
-                dropItem(player, dropTargetItem);
-                continue;
-            case NORTH:
-                if (currentRoom->north == NULL) {
-                    printf("\nThere is no path on the north.\n");
-                    continue;
-                }
-                printf("\nMoving to the north\n");
-                currentRoom = currentRoom->north;
+    switch (choice) {
+        case INVENTORY:
+            displayPlayerInventory(player);
+            printf("\n");
+            exploreDungeon(currentRoom, player, false);
+            // continue in same room
+            break;
+        case PICKUP:
+            // if there is an item in the room
+            if (currentRoom->itemsCount == 0){
+                printf("\nThere are no items to pick up:\n");
+                exploreDungeon(currentRoom, player, false);
                 break;
-            case SOUTH:
-                if (currentRoom->south == NULL) {
-                    printf("\nThere is no path on the south.\n");
-                    continue;
-                }
-                printf("\nMoving to the south\n");
-                currentRoom = currentRoom->south;
+            }
+            printf("\nEnter the item ID to pick up:\n");
+            int pickupItemID = parse_item_command();
+            pickUpItem(player, pickupItemID);
+            exploreDungeon(currentRoom, player, false);
+            break;
+        case USE:
+            printf("\nNot implemented yet");
+            exploreDungeon(currentRoom, player, false);
+            break;
+        case DROP:
+            if (player->itemsCount == 0){
+                printf("\nThere are no items in your inventory:\n");
+                exploreDungeon(currentRoom, player, false);
                 break;
-            case WEST:
-                if (currentRoom->west == NULL) {
-                    printf("\nThere is no path on the west.\n");
-                    continue;
-                }
-                printf("\nMoving to the west\n");
-                currentRoom = currentRoom->west;
+            }
+            printf("\nEnter the item ID to drop:\n");
+            int dropItemID = parse_item_command();
+            dropItem(player, dropItemID);
+            exploreDungeon(currentRoom, player, false);
+            break;
+        case NORTH:
+            if (currentRoom->north == NULL) {
+                printf("\nThere is no path on the north.\n");
+                exploreDungeon(currentRoom, player, false);
+                break;;
+            }
+            printf("\nMoving to the north\n");
+            // currentRoom = currentRoom->north; // Maybe remove this and put directly in exploredungeon🤔💭?
+            exploreDungeon(currentRoom->north, player, true);
+            break;
+        case SOUTH:
+            if (currentRoom->south == NULL) {
+                printf("\nThere is no path on the south.\n");
+                exploreDungeon(currentRoom, player, false);
                 break;
-            case EAST:
-                if (currentRoom->east == NULL) {
-                    printf("\nThere is no path on the east.\n");
-                    continue;
-                }
-                printf("\nMoving to the east\n");
-                currentRoom = currentRoom->east;
+            }
+            printf("\nMoving to the south\n");
+            // currentRoom = currentRoom->south;
+            exploreDungeon(currentRoom->south, player, true);
+            break;
+        case WEST:
+            if (currentRoom->west == NULL) {
+                printf("\nThere is no path on the west.\n");
+                exploreDungeon(currentRoom, player, false);
                 break;
-            case EXIT:
-                printf("\nExiting dungeon\n");
-                return;
-            default:
-                printf("\nInvalid choice!\nEnter a valid choice\n");
-                continue;
-        }
+            }
+            printf("\nMoving to the west\n");
+            // currentRoom = currentRoom->west;
+            exploreDungeon(currentRoom->west, player, true);
+            break;
+        case EAST:
+            if (currentRoom->east == NULL) {
+                printf("\nThere is no path on the east.\n");
+                exploreDungeon(currentRoom, player, false);
+                break;
+            }
+            printf("\nMoving to the east\n");
+            // currentRoom = currentRoom->east;
+            exploreDungeon(currentRoom->east, player, true);
+            break;
+        case EXIT:
+            printf("\nExiting dungeon\n");
+            return;
+        default:
+            printf("\nInvalid choice!\nEnter a valid choice\n");
+            exploreDungeon(currentRoom, player, false);
+            break;
     }
 }
 

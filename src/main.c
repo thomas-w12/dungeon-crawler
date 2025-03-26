@@ -1,3 +1,4 @@
+#include <stdbool.h> // not sure if i should add this since it has already been included in dungeon.h
 #include <stdlib.h>
 #include <stdio.h>
 #include "../include/fileio.h"
@@ -50,7 +51,7 @@ int main() {
    
     displayRooms(rooms, roomCount);
     
-    exploreDungeon(room, player);
+    exploreDungeon(room, player, true);
 
     saveLayout(layoutStateFPath, rooms, roomCount);
     savePlayerState(playerStateFPath, player);

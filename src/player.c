@@ -43,18 +43,35 @@ void updatePlayerRoom(Player* player, Room* currentRoom){
     player->currentRoomPtr = currentRoom;
 }
 
-void pickUpItem(Player* player, Item* item){
+void pickUpItem(Player* player, int pickupItemID){
+    Item* pickupTargetItem = NULL;
+
+    // Find the item with matching ID in the current room
+    for (int i = 0; i < player->currentRoomPtr->itemsCount; i++) {
+        if (
+            player->currentRoomPtr->items[i] != NULL && 
+            player->currentRoomPtr->items[i]->ID == pickupItemID
+        ) {
+            pickupTargetItem = player->currentRoomPtr->items[i];
+            break;
+        }
+    }
+    if (pickupTargetItem == NULL) {
+        printf("\nInvalid item ID\n");
+        return;
+    }
+
     if (player->itemsCount >= MAX_PLAYER_ITEMS){
         printf("\nInventory is full. Cannot pick up item.");
         return;
     }
 
-    player->inventory[player->itemsCount] = item;
+    player->inventory[player->itemsCount] = pickupTargetItem;
     player->itemsCount++;
 
     // Remove item from room, make sure item that is passed is in the current room
     for (int i=0; i<player->currentRoomPtr->itemsCount; i++){
-        if (player->currentRoomPtr->items[i] == item){
+        if (player->currentRoomPtr->items[i] == pickupTargetItem){
             player->currentRoomPtr->items[i] = NULL;
             player->currentRoomPtr->itemsCount--;
             break;
@@ -62,14 +79,28 @@ void pickUpItem(Player* player, Item* item){
     }
 }
 
-void dropItem(Player* player, Item* item){
+void dropItem(Player* player, int dropItemID){
+    Item* dropTargetItem = NULL;
+
+    // Find the item with matching ID in the player's inventory
+    for (int i = 0; i < player->itemsCount; i++) {
+        if (player->inventory[i] != NULL 
+            && player->inventory[i]->ID == dropItemID) {
+                dropTargetItem = player->inventory[i];
+            break;
+        }
+    }
+    if (dropTargetItem == NULL) {
+        printf("\nInvalid item ID\n");
+        return;
+    }
     if (player->itemsCount == 0){
         printf("\nInventory is empty. Cannot drop item.");
         return;
     }
 
     for (int i=0; i<player->itemsCount; i++){
-        if (player->inventory[i] == item){
+        if (player->inventory[i] == dropTargetItem){
             player->inventory[i] = NULL;
             player->itemsCount--;
             break;
@@ -79,7 +110,7 @@ void dropItem(Player* player, Item* item){
     // Add item to room
     for (int i=0; i<MAX_ITEMS_IN_ROOM; i++){
         if (player->currentRoomPtr->items[i] == NULL){
-            player->currentRoomPtr->items[i] = item;
+            player->currentRoomPtr->items[i] = dropTargetItem;
             player->currentRoomPtr->itemsCount++;
             break;
         }
