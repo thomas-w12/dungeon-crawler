@@ -26,6 +26,7 @@ void dropItem(Player* player, int dropItemID);
 void decreasePlayerHealth(Player* player, int damage);
 void increasePlayerHealth(Player* player, int health);
 void increasePlayerScore(Player* player, int score);
+void triggerEvent(Room* room, Player* player);
 void freePlayer(Player* player);
 
 #endif

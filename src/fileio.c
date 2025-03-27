@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/fileio.h"
+#include "../include/event.h"
 
 int saveLayout(const char* layoutStateFPath, Room* rooms[], int roomCount) {
     FILE* file = fopen(layoutStateFPath, "w");
@@ -23,6 +24,12 @@ int saveLayout(const char* layoutStateFPath, Room* rooms[], int roomCount) {
                 (room->west ? room->west->ID : DNE),
                 (room->east ? room->east->ID : DNE));
 
+        int arr[MAX_ROOM_EVENTS];
+        eventListToArray(room->events, arr, MAX_ROOM_EVENTS);
+        for (int j = 0; j < MAX_ROOM_EVENTS; j++) {
+            fprintf(file, "%d,", arr[j]);
+        }
+        
         for (int j = 0; j < room->itemsCount; j++) {
             fprintf(file, "%d,", room->items[j]->ID);
         }
@@ -64,6 +71,15 @@ int loadLayout(const char* layoutStateFPath, Room* rooms[], int* roomCount) {
         rooms[i]->west = (westID != DNE) ? rooms[westID] : NULL;
         rooms[i]->east = (eastID != DNE) ? rooms[eastID] : NULL;
         rooms[i]->itemsCount = 0;
+
+        rooms[i]->events = NULL;
+        for (int j=0; j<MAX_ROOM_EVENTS; j++){
+            int event;
+            fscanf(file, "%d,", &event);
+            if (event != DNE){
+                rooms[i]->events = EventList_insert(rooms[i]->events, event);
+            }
+        }
 
         while (fgetc(file) != '\n' && !feof(file)) {
             fseek(file, -1, SEEK_CUR); // Go back one char from current position(fgetc pushed it forward)

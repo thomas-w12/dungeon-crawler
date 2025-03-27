@@ -6,6 +6,7 @@
 #include "../include/player.h"
 #include "../include/item.h"
 #include "../include/dungeon.h"
+#include "../include/event.h"
 
 
 int main() {
@@ -23,9 +24,11 @@ int main() {
     
     Item* itemsArrRoom1[] = {item1, item2, item3, item4}; 
     int itemsLengthRoom1 = sizeof(itemsArrRoom1) / sizeof(Item*);  
+
+    EventNode* events = EventNode_construct(TRAP);
     
-    Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, itemsArrRoom1, itemsLengthRoom1);
-    Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, 0);
+    Room* room = Room_construct(0, "Trap", "This is a trap room", events, NULL, NULL, NULL, NULL, itemsArrRoom1, itemsLengthRoom1);
+    Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
     Player* player = Player_construct("Player", 0, 100, 0, room);
 

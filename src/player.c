@@ -84,9 +84,11 @@ void dropItem(Player* player, int dropItemID){
 
     // Find the item with matching ID in the player's inventory
     for (int i = 0; i < player->itemsCount; i++) {
-        if (player->inventory[i] != NULL 
-            && player->inventory[i]->ID == dropItemID) {
-                dropTargetItem = player->inventory[i];
+        if (
+            player->inventory[i] != NULL && 
+            player->inventory[i]->ID == dropItemID
+        ) {
+            dropTargetItem = player->inventory[i];
             break;
         }
     }

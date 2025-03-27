@@ -15,6 +15,8 @@ void Room_destroy(Room* room){
         room->east->west = room->west;
     }
 
+    //free roomevents;
+    freeEventList(room->events);
     // freeItems(room->items, &room->itemsCount); //(Items are global and only allocated once, only freed at end of program)
     free(room);
 }
@@ -23,7 +25,7 @@ void Room_copy(Room* src, Room* dest){
 
 }
 
-Room* Room_construct(int ID, char* name, char* description, Room* north, Room* south, Room* west, Room* east, Item* items[], int itemCount){
+Room* Room_construct(int ID, char* name, char* description, EventNode* events, Room* north, Room* south, Room* west, Room* east, Item* items[], int itemCount){
     // Thinking of adding Room* rooms[] and int* roomCount to the signature so anytime a room is constructed, addition to rooms and increasing room count would be done in one function; (or maybe it should be done in addRoom())
     Room* room = (Room*)malloc(sizeof(Room));
     if (room == NULL){
@@ -34,6 +36,7 @@ Room* Room_construct(int ID, char* name, char* description, Room* north, Room* s
     room->ID = ID;
     strcpy(room->name, name);
     strcpy(room->description, description);
+    room->events = events;
     room->north = north;
     room->south = south;
     room->west = west;
@@ -52,80 +55,127 @@ Room* Room_construct(int ID, char* name, char* description, Room* north, Room* s
     return room;
 }
 
-Room* parseRoom(char* line, Room* rooms[]){
-    int ID;
-    char name[10]; //Change to a global like MAX_NAME_LEN
-    char description[20];
-    Room* north;
-    Room* south;
-    Room* west;
-    Room* east;
-    Item* items[MAX_ITEMS_IN_ROOM];
-    int itemCount = 0;
+void generateLayout(Room* rooms[], int* roomCount, int noOfRooms){
+    //for every randomly generated room, randomly pick a number from 0 to max items in room, 
+    // whatever no 'n' is picked, randomly get n numbers from 0 to maxitemscount that represents the item index;
+    // if there are 3 or more items in a room, add a LOCKED event to the room;
 
-    int* connections = (int*)malloc(sizeof(int)*4); // Four possible connection N S W E
-    if (connections == NULL) {
-        printf("\nCould not create room connections");
-        return NULL;
-    }
-
-    char* token = strtok(line, ",");
-
-    int index = 0;
-    while (token != NULL){
-        switch(index){
-            case 0:
-                ID = strtol(token, NULL, 10);
-                break;
-            case 1:
-                strcpy(name, token);
-                break;
-            case 2:
-                strcpy(description, token);
-                break;
-            case 3:
-                if (strcmp(token, "NULL") != 0){
-                    north = rooms[strtol(token, NULL, 10)];
-                }else{
-                    north = NULL;
-                }
-                break;
-            case 4:
-                if (strcmp(token, "NULL") != 0){
-                    south = rooms[strtol(token, NULL, 10)];
-                }else{
-                    south = NULL;
-                }
-                break;
-            case 5:
-                if (strcmp(token, "NULL") != 0){
-                    west = rooms[strtol(token, NULL, 10)];
-                }else{
-                    west = NULL;
-                }
-                break;
-            case 6:
-                if (strcmp(token, "NULL") != 0){
-                    east = rooms[strtol(token, NULL, 10)];
-                }else{
-                    east = NULL;
-                }
-                break;
-            case 7:
-            case 8:
-            case 9: // There are max 3 items in the room
-                items[itemCount] = Item_construct(strtol(token, NULL, 10));
-                itemCount++;
-                break;
-        }
-        token = strtok(NULL, ",");
-        index ++;
-    }
-    
-    if (index < 7) return NULL; // Index must be greater than (room with 1 or more items) or equal to 7 (room with zero items) for all valid room line [Count the number of commas + 1 in the layout that is the index]
-
-    return Room_construct(ID, name, description, north, south, west, east, items, itemCount);
 }
+
+void expandRoom(){
+    //reallocate if room count
+}
+
+void displayRoom(Room* room){
+    if (room == NULL){
+        printf("\nRoom does not exist");
+        return;
+    }
+    printf("\nRoom - ID: %d\tName: %s\tDescription: %s", room->ID, room->name, room->description);
+    printf("\nItems in room (%d): ", room->itemsCount);
+    displayItems(room->items, room->itemsCount, MAX_ITEMS_IN_ROOM);
+    printf("\n");
+}
+
+void displayRooms(Room* rooms[], int roomCount){
+    if (roomCount == 0){
+        printf("\nThere are no rooms!");
+        return;
+    }
+
+    for (int i = 0; i<roomCount; i++){
+        displayRoom(rooms[i]);
+    }
+}
+
+void freeRooms(Room* rooms[], int* roomCount){
+    if (*roomCount == 0){
+        printf("\nThere are no rooms to free!");
+        return;
+    }
+    for (int i=0; i<*roomCount; i++){
+        Room_destroy(rooms[i]);
+    }
+
+    *roomCount = 0;
+}
+
+
+// Room* parseRoom(char* line, Room* rooms[]){
+//     int ID;
+//     char name[10]; //Change to a global like MAX_NAME_LEN
+//     char description[20];
+//     Room* north;
+//     Room* south;
+//     Room* west;
+//     Room* east;
+//     // RoomEventNode events;
+//     Item* items[MAX_ITEMS_IN_ROOM];
+//     int itemCount = 0;
+
+//     int* connections = (int*)malloc(sizeof(int)*4); // Four possible connection N S W E
+//     if (connections == NULL) {
+//         printf("\nCould not create room connections");
+//         return NULL;
+//     }
+
+//     char* token = strtok(line, ",");
+
+//     int index = 0;
+//     while (token != NULL){
+//         switch(index){
+//             case 0:
+//                 ID = strtol(token, NULL, 10);
+//                 break;
+//             case 1:
+//                 strcpy(name, token);
+//                 break;
+//             case 2:
+//                 strcpy(description, token);
+//                 break;
+//             case 3:
+//                 if (strcmp(token, "NULL") != 0){
+//                     north = rooms[strtol(token, NULL, 10)];
+//                 }else{
+//                     north = NULL;
+//                 }
+//                 break;
+//             case 4:
+//                 if (strcmp(token, "NULL") != 0){
+//                     south = rooms[strtol(token, NULL, 10)];
+//                 }else{
+//                     south = NULL;
+//                 }
+//                 break;
+//             case 5:
+//                 if (strcmp(token, "NULL") != 0){
+//                     west = rooms[strtol(token, NULL, 10)];
+//                 }else{
+//                     west = NULL;
+//                 }
+//                 break;
+//             case 6:
+//                 if (strcmp(token, "NULL") != 0){
+//                     east = rooms[strtol(token, NULL, 10)];
+//                 }else{
+//                     east = NULL;
+//                 }
+//                 break;
+//             case 7:
+//             case 8:
+//             case 9: // There are max 3 items in the room
+//                 items[itemCount] = Item_construct(strtol(token, NULL, 10));
+//                 itemCount++;
+//                 break;
+//         }
+//         token = strtok(NULL, ",");
+//         index ++;
+//     }
+    
+//     if (index < 7) return NULL; // Index must be greater than (room with 1 or more items) or equal to 7 (room with zero items) for all valid room line [Count the number of commas + 1 in the layout that is the index]
+
+//     return Room_construct(ID, name, description, north, south, west, east, items, itemCount);
+// }
 
 // int loadLayout(char* layoutStateFPath, Room* rooms[], int* roomCount){
 //     FILE* fp = fopen(layoutStateFPath, "r");
@@ -251,44 +301,3 @@ void serializeRoom(Room* room, char* line){
 //     printf("\nSaved layout");
 //     return EXIT_SUCCESS;
 // }
-
-void generateLayout(Room* rooms[], int* roomCount){
-
-}
-
-void displayRoom(Room* room){
-    if (room == NULL){
-        printf("\nRoom does not exist");
-        return;
-    }
-    printf("\nRoom - ID: %d\tName: %s\tDescription: %s", room->ID, room->name, room->description);
-    printf("\nItems in room (%d): ", room->itemsCount);
-    displayItems(room->items, room->itemsCount, MAX_ITEMS_IN_ROOM);
-    printf("\n");
-}
-
-void displayRooms(Room* rooms[], int roomCount){
-    if (roomCount == 0){
-        printf("\nThere are no rooms!");
-        return;
-    }
-
-    for (int i = 0; i<roomCount; i++){
-        displayRoom(rooms[i]);
-    }
-}
-
-
-
-
-void freeRooms(Room* rooms[], int* roomCount){
-    if (*roomCount == 0){
-        printf("\nThere are no rooms to free!");
-        return;
-    }
-    for (int i=0; i<*roomCount; i++){
-        Room_destroy(rooms[i]);
-    }
-
-    *roomCount = 0;
-}

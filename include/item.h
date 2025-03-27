@@ -1,8 +1,8 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#define ITEM_TYPES (const char*[]){"sword", "stone", "shield", "ladder"}
-#define ITEM_DESCRIPTIONS (const char*[]){"Fight off monsters", "Stone the giant", "Shield against trap", "Climb out of trap"}
+#define ITEM_TYPES (const char*[]){"sword", "stone", "shield", "ladder", "potion", "key"}
+#define ITEM_DESCRIPTIONS (const char*[]){"Fight off monsters", "Stone the giant", "Shield against trap", "Climb out of trap", "+ 50 health", "open locked door"}
 
 typedef struct Item{
     // Item type and description depends on the item id
@@ -10,6 +10,11 @@ typedef struct Item{
     char type[10];
     char description[20];
 } Item;
+
+typedef struct ItemNode{
+    Item* data;
+    struct ItemNode* next;
+} ItemNode;
 
 Item* Item_construct(int ID);
 void displayItem(Item* item);
