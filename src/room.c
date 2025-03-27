@@ -1,4 +1,7 @@
+#include <stdlib.h>
+#include <time.h>
 #include "../include/room.h"
+#include "../include/queue.h"
 
 void Room_destroy(Room* room){
     // find all its connections and close the space between them [(or maybe set to null)]
@@ -55,15 +58,96 @@ Room* Room_construct(int ID, char* name, char* description, EventNode* events, R
     return room;
 }
 
-void generateLayout(Room* rooms[], int* roomCount, int noOfRooms){
+void generateLayout(Room** rooms, int* roomCount, int noRoomsToAdd, int* allocRoomsSize){
     //for every randomly generated room, randomly pick a number from 0 to max items in room, 
     // whatever no 'n' is picked, randomly get n numbers from 0 to maxitemscount that represents the item index;
     // if there are 3 or more items in a room, add a LOCKED event to the room;
 
+    // iteratively generate layout BSF approach;
+
+    //reallocate if room count
+    if ((*roomCount + noRoomsToAdd) >= *allocRoomsSize){ 
+        Room** newPtr = realloc(rooms, sizeof(Room*)* ((*allocRoomsSize) += 20)); //reallocate memory (add 20 more)
+        if (newPtr == NULL){
+            perror("Could not reallocate memory for rooms");
+            return;
+        }
+        rooms = newPtr;
+        (*allocRoomsSize) += 20;
+        return;
+    }
+
+    Queue roomQueue;
+    Queue_init(&roomQueue);
+
+    int* visited = malloc(sizeof(int) * (*allocRoomsSize));
+
+    expandRoom(rooms, roomCount, *roomCount, noRoomsToAdd, allocRoomsSize, &roomQueue, visited);
+
+    clearQueue(&roomQueue);
+    free(visited);
 }
 
-void expandRoom(){
-    //reallocate if room count
+void expandRoom(Room** rooms, int* roomCount, int roomID, int noRoomsToAdd, int* allocRoomsSize, Queue* roomQueue, int* visited){
+    // printf("\nNo rooms: %d\n", *roomCount);
+    Item* items[MAX_ITEMS_IN_ROOM];
+    Room* firstRoom = Room_construct(*roomCount, "Test", "Test room", NULL, NULL, NULL, NULL, NULL, items, 0);
+    if (firstRoom == NULL){
+        perror("Could not create room");
+        return;
+    }
+    rooms[firstRoom->ID] = firstRoom;
+    (*roomCount)++;
+    enqueue(roomQueue, firstRoom->ID);
+
+    srand(time(0));
+    while ((isEmpty(roomQueue) == false) && (*roomCount < noRoomsToAdd)){
+        Room* room = rooms[peek(roomQueue)->data]; //this is fine because it would not enter if queue is empty
+
+        int noOfConnections = (rand()%4)+1; // we want at least 1 connection
+        // printf("\nRand: %d\n", noOfConnections);
+        // printf("\nNo rooms: %d\n", *roomCount);
+        // printf("\nNo rooms to add: %d\n", noRoomsToAdd);
+
+        for (int i=0; i<noOfConnections; i++){
+            if (*roomCount >= noRoomsToAdd) break;
+
+            int direction = (rand()%4); // need to handle multiple same connections, like (1, 1)
+            Room* newRoom = Room_construct(*roomCount, "Test", "Test room", NULL, NULL, NULL, NULL, NULL, items, 0);
+            
+            if (newRoom == NULL){
+                perror("Could not create room");
+                return;
+            }
+            switch(direction){
+                case 0: // North
+                    room->north = newRoom;
+                    newRoom->south = room;
+                    enqueue(roomQueue, newRoom->ID);
+                    break;
+                case 1: // South
+                    room->south = newRoom;
+                    newRoom->north = room;
+                    enqueue(roomQueue, newRoom->ID);
+                    break;
+                case 2: // West
+                    room->west = newRoom;
+                    newRoom->east = room;
+                    enqueue(roomQueue, newRoom->ID);
+                    break;
+                case 3: // East 
+                    room->east = newRoom;
+                    newRoom->west = room;
+                    enqueue(roomQueue, newRoom->ID);
+                    break;
+            }
+            rooms[newRoom->ID] = newRoom;
+            (*roomCount)++;
+            // printf("\nNo rooms: %d\n", *roomCount);
+        }
+        dequeue(roomQueue);
+        printQueue(roomQueue);
+    }
 }
 
 void displayRoom(Room* room){
@@ -77,7 +161,7 @@ void displayRoom(Room* room){
     printf("\n");
 }
 
-void displayRooms(Room* rooms[], int roomCount){
+void displayRooms(Room** rooms, int roomCount){
     if (roomCount == 0){
         printf("\nThere are no rooms!");
         return;
@@ -88,7 +172,7 @@ void displayRooms(Room* rooms[], int roomCount){
     }
 }
 
-void freeRooms(Room* rooms[], int* roomCount){
+void freeRooms(Room** rooms, int* roomCount){
     if (*roomCount == 0){
         printf("\nThere are no rooms to free!");
         return;
@@ -98,6 +182,7 @@ void freeRooms(Room* rooms[], int* roomCount){
     }
 
     *roomCount = 0;
+    free(rooms);
 }
 
 

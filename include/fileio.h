@@ -7,8 +7,8 @@
 
 #define DNE -1
 
-int saveLayout(const char* layoutStateFPath, Room* rooms[], int roomCount);
-int loadLayout(const char* layoutStateFPath, Room* rooms[], int* roomCount);
+int saveLayout(const char* layoutStateFPath, Room** rooms, int roomCount);
+int loadLayout(const char* layoutStateFPath, Room** rooms, int* roomCount);
 int savePlayerState(const char* playerStateFPath, Player* player);
 int loadPlayerState(const char* playerStateFPath, Player* player);
 

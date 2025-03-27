@@ -4,7 +4,7 @@
 #include "../include/fileio.h"
 #include "../include/event.h"
 
-int saveLayout(const char* layoutStateFPath, Room* rooms[], int roomCount) {
+int saveLayout(const char* layoutStateFPath, Room** rooms, int roomCount) {
     FILE* file = fopen(layoutStateFPath, "w");
 
     if (file == NULL) {
@@ -40,7 +40,7 @@ int saveLayout(const char* layoutStateFPath, Room* rooms[], int roomCount) {
     return EXIT_SUCCESS;
 }
 
-int loadLayout(const char* layoutStateFPath, Room* rooms[], int* roomCount) {
+int loadLayout(const char* layoutStateFPath, Room** rooms, int* roomCount) {
     FILE* file = fopen(layoutStateFPath, "r");
 
     if (file == NULL) {
