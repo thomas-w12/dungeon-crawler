@@ -33,7 +33,7 @@ Room* Room_construct(int ID, char* name, char* description, EventNode* events, R
 // Room* addRoom(char* name, char* description);
 // Room* parseRoom(char* line, Room* rooms[]);
 // void serializeRoom(Room* room, char* line);
-void generateLayout(Room** rooms, int* roomCount, int noRoomsToAdd, int* allocRoomsSize);
+void generateLayout(Room*** rooms, int* roomCount, int noRoomsToAdd, int* allocRoomsSize);
 // int saveLayout(const char* layoutStateFPath, Room** rooms, int roomCount);
 // int loadLayout(const char* layoutStateFPath, Room** rooms, int* roomCount);
 void displayRoom(Room* room);

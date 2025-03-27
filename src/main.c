@@ -16,6 +16,10 @@ int main() {
     int allocRoomSize = 10; // initial rooms alloc size
     int roomCount = 0;
     Room** rooms = malloc(sizeof(Room*) * allocRoomSize);
+    if (rooms == NULL){
+        perror("Could not allocate memory for rooms");
+        return EXIT_FAILURE;
+    }
     // Room** rooms = malloc(sizeof(Room*)*MAX_ROOMS); // should be * initial rooms alloc size
     
     char layoutStateFPath[] = {"saved_games/layoutState.txt"};
@@ -49,7 +53,7 @@ int main() {
     //     roomCount ++;
     //     // displayRoom(room1);
     // }
-    generateLayout(rooms, &roomCount, 10, &allocRoomSize);
+    generateLayout(&rooms, &roomCount, 10, &allocRoomSize);
     displayRooms(rooms, roomCount);
     // saveLayout(layoutStateFPath, rooms, roomCount);
     // loadLayout(layoutStateFPath, rooms, &roomCount);

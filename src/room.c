@@ -58,7 +58,7 @@ Room* Room_construct(int ID, char* name, char* description, EventNode* events, R
     return room;
 }
 
-void generateLayout(Room** rooms, int* roomCount, int noRoomsToAdd, int* allocRoomsSize){
+void generateLayout(Room*** rooms, int* roomCount, int noRoomsToAdd, int* allocRoomsSize){
     //for every randomly generated room, randomly pick a number from 0 to max items in room, 
     // whatever no 'n' is picked, randomly get n numbers from 0 to maxitemscount that represents the item index;
     // if there are 3 or more items in a room, add a LOCKED event to the room;
@@ -66,15 +66,16 @@ void generateLayout(Room** rooms, int* roomCount, int noRoomsToAdd, int* allocRo
     // iteratively generate layout BSF approach;
 
     //reallocate if room count
+    // Add this to expand room, and realloc visited as well;
     if ((*roomCount + noRoomsToAdd) >= *allocRoomsSize){ 
-        Room** newPtr = realloc(rooms, sizeof(Room*)* ((*allocRoomsSize) += 20)); //reallocate memory (add 20 more)
+        Room** newPtr = realloc(*rooms, sizeof(Room*) * ((*allocRoomsSize) + 20)); //reallocate memory (add 20 more)
         if (newPtr == NULL){
             perror("Could not reallocate memory for rooms");
             return;
         }
-        rooms = newPtr;
+        *rooms = newPtr;
         (*allocRoomsSize) += 20;
-        return;
+        printf("\nReallocating: %d %d", *allocRoomsSize, *roomCount);
     }
 
     Queue roomQueue;
@@ -82,7 +83,7 @@ void generateLayout(Room** rooms, int* roomCount, int noRoomsToAdd, int* allocRo
 
     int* visited = malloc(sizeof(int) * (*allocRoomsSize));
 
-    expandRoom(rooms, roomCount, *roomCount, noRoomsToAdd, allocRoomsSize, &roomQueue, visited);
+    expandRoom(*rooms, roomCount, *roomCount, noRoomsToAdd, allocRoomsSize, &roomQueue, visited);
 
     clearQueue(&roomQueue);
     free(visited);
