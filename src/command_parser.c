@@ -1,4 +1,6 @@
 #include "../include/command_parser.h"
+#include "../include/global.h"
+
 
 int parse_room_command() {
     // char* input[100];
@@ -37,7 +39,7 @@ int parse_room_command() {
         case 'w':
             return WEST;
         default:
-            return -1; // Invalid command
+            return DNE; // Invalid command
     }
     // if (strcmp(input, "Q\n") == 0 || strcmp(input, "q\n") == 0) {
     //     return EXIT;

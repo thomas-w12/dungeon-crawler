@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wshadow -Wextra -I./include
+CFLAGS = -g -Wall -Wshadow -Wextra -I./include
 EXE = dungeon_crawler
 
 SRCDIR = src
@@ -33,6 +33,9 @@ sample_test: $(OBJDIR)/sample_test.o $(OBJS)
 
 test: player_test sample_test
 
+valgrind: $(EXE)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(EXE)
+	
 clean:
 	rm -rf $(EXE) $(OBJDIR)
 

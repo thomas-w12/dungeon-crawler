@@ -9,12 +9,12 @@
 
 typedef struct Player {
     char name[10]; // Tell player to enter name at begining. Max length of about 10 characters
-    int currentRoom; //ID of current room
+    int currentRoom; //ID of current room (This is redundant)
     Room* currentRoomPtr; // Pointer to current room
     int health; // Health bar
     int score;
-    Item* inventory[MAX_PLAYER_ITEMS]; // List of items the player has
-    int itemsCount;
+    ItemNode* inventory; // List of items the player has
+    // int itemsCount;
 } Player;
 
 Player* Player_construct(char* name, int currentRoom, int health, int score, Room* currentRoomPtr);

@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#define DNE -1
+#define TOTAL_EVENTS_COUNT 7 // update this count every time a new event is added to the Events
 
 typedef enum Event{
     NORMAL,
@@ -22,8 +22,8 @@ typedef struct EventNode{
 } EventNode;
 
 EventNode* EventNode_construct(Event event);
-EventNode* EventList_insert(EventNode* head, Event event);
-void EventList_delete(EventNode* head, Event event);
+EventNode* EventList_insert(EventNode** head, Event event);
+void EventList_delete(EventNode** head, Event event);
 int eventListCount(EventNode* head);
 void freeEventNode(EventNode* eventNode);
 void freeEventList(EventNode* head);

@@ -3,6 +3,8 @@
 
 #define ITEM_TYPES (const char*[]){"sword", "stone", "shield", "ladder", "potion", "key"}
 #define ITEM_DESCRIPTIONS (const char*[]){"Fight off monsters", "Stone the giant", "Shield against trap", "Climb out of trap", "+ 50 health", "open locked door"}
+#define TOTAL_ITEMS_COUNT 6 // update this count every time a new item is added to the ITEM_TYPES and ITEM_DESCRIPTIONS
+// maybe pickaxe item to generate n path from current room
 
 typedef struct Item{
     // Item type and description depends on the item id
@@ -17,13 +19,17 @@ typedef struct ItemNode{
 } ItemNode;
 
 Item* Item_construct(int ID);
+ItemNode* ItemNode_construct(Item* item);
+ItemNode* ItemList_insert(ItemNode** head, Item* item);
+Item* ItemList_deleteAtIndex(ItemNode** head, int itemIndex);
+Item* ItemList_deleteItemID(ItemNode** head, int itemID);
+int itemListCount(ItemNode* head);
+void itemListToArr(ItemNode* head, Item* arr[], int arrSize); // maybe change to only output item data (which is an int)
+void freeItemList(ItemNode** head);
+void printItemList(ItemNode* head);
 void displayItem(Item* item);
 void displayItems(Item* items[], int itemCount, int maxItems);
 void freeItem(Item* item);
 void freeItems(Item* items[], int* itemsCount);
-// void addItemToRoom(Room* room, Item item);
-// void addItemToPlayer(Player* player, Item item);
-// void removeItemFromRoom(Room* room, Item item); // Remove item after player collects item
-// void removeItemFromPlayer(Player* player, Item item); // Remove item after player uses them or dies
 
 #endif

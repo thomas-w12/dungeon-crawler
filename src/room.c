@@ -2,6 +2,7 @@
 #include <time.h>
 #include "../include/room.h"
 #include "../include/queue.h"
+#include "../include/global.h"
 
 void Room_destroy(Room* room){
     // find all its connections and close the space between them [(or maybe set to null)]
@@ -17,10 +18,9 @@ void Room_destroy(Room* room){
     if (room->east != NULL){
         room->east->west = room->west;
     }
-
-    //free roomevents;
+    
     freeEventList(room->events);
-    // freeItems(room->items, &room->itemsCount); //(Items are global and only allocated once, only freed at end of program)
+    freeItemList(&room->items);
     free(room);
 }
 
@@ -28,9 +28,9 @@ void Room_copy(Room* src, Room* dest){
 
 }
 
-Room* Room_construct(int ID, char* name, char* description, EventNode* events, Room* north, Room* south, Room* west, Room* east, Item* items[], int itemCount){
-    // Thinking of adding Room* rooms[] and int* roomCount to the signature so anytime a room is constructed, addition to rooms and increasing room count would be done in one function; (or maybe it should be done in addRoom())
-    Room* room = (Room*)malloc(sizeof(Room));
+Room* Room_construct(int ID, char* name, char* description, Room* north, Room* south, Room* west, Room* east, EventNode* events, ItemNode* items){
+    // Thinking of adding Room** rooms and int* roomCount to the signature so anytime a room is constructed, addition to rooms and increasing room count would be done in one function; (or maybe it should be done in addRoom())
+    Room* room = malloc(sizeof(Room));
     if (room == NULL){
         printf("\nCould not create room");
         return NULL;
@@ -39,116 +39,143 @@ Room* Room_construct(int ID, char* name, char* description, EventNode* events, R
     room->ID = ID;
     strcpy(room->name, name);
     strcpy(room->description, description);
-    room->events = events;
     room->north = north;
     room->south = south;
     room->west = west;
     room->east = east;
-    room->itemsCount = 0;
+    
+    room->events = events;
+    room->items = items;
 
-    for (int i=0; i<itemCount;i++){
-        if (i >= MAX_ITEMS_IN_ROOM){
-            break;
-        }
-        room->items[i] = items[i];
-        room->itemsCount++;
-    }
-
-    // displayRoom(room);
     return room;
 }
 
-void generateLayout(Room*** rooms, int* roomCount, int noRoomsToAdd, int* allocRoomsSize){
-    //for every randomly generated room, randomly pick a number from 0 to max items in room, 
+Room* constructRandomRoom(int roomCount){
+    // for every randomly generated room, randomly pick a number from 0 to max items in room, 
     // whatever no 'n' is picked, randomly get n numbers from 0 to maxitemscount that represents the item index;
     // if there are 3 or more items in a room, add a LOCKED event to the room;
 
-    // iteratively generate layout BSF approach;
+    ItemNode* items = NULL;
+    EventNode* events = NULL;
+    Room* room = Room_construct(roomCount, "Test", "Test room", NULL, NULL, NULL, NULL, events, items);
 
-    //reallocate if room count
-    // Add this to expand room, and realloc visited as well;
-    if ((*roomCount + noRoomsToAdd) >= *allocRoomsSize){ 
-        Room** newPtr = realloc(*rooms, sizeof(Room*) * ((*allocRoomsSize) + 20)); //reallocate memory (add 20 more)
-        if (newPtr == NULL){
-            perror("Could not reallocate memory for rooms");
-            return;
-        }
-        *rooms = newPtr;
-        (*allocRoomsSize) += 20;
-        printf("\nReallocating: %d %d", *allocRoomsSize, *roomCount);
-    }
-
-    Queue roomQueue;
-    Queue_init(&roomQueue);
-
-    int* visited = malloc(sizeof(int) * (*allocRoomsSize));
-
-    expandRoom(*rooms, roomCount, *roomCount, noRoomsToAdd, allocRoomsSize, &roomQueue, visited);
-
-    clearQueue(&roomQueue);
-    free(visited);
+    return room;
 }
 
-void expandRoom(Room** rooms, int* roomCount, int roomID, int noRoomsToAdd, int* allocRoomsSize, Queue* roomQueue, int* visited){
-    // printf("\nNo rooms: %d\n", *roomCount);
-    Item* items[MAX_ITEMS_IN_ROOM];
-    Room* firstRoom = Room_construct(*roomCount, "Test", "Test room", NULL, NULL, NULL, NULL, NULL, items, 0);
+void generateLayout(Room*** roomsPtr, int* roomCount, int noRoomsToAdd, int* allocRoomsSize){
+    Room* firstRoom = constructRandomRoom(*roomCount);
     if (firstRoom == NULL){
         perror("Could not create room");
         return;
     }
-    rooms[firstRoom->ID] = firstRoom;
+    *roomsPtr[firstRoom->ID] = firstRoom;
     (*roomCount)++;
-    enqueue(roomQueue, firstRoom->ID);
+    
+    expandRoom(roomsPtr, firstRoom, roomCount, noRoomsToAdd-1, allocRoomsSize);
+}
 
-    srand(time(0));
-    while ((isEmpty(roomQueue) == false) && (*roomCount < noRoomsToAdd)){
-        Room* room = rooms[peek(roomQueue)->data]; //this is fine because it would not enter if queue is empty
+void reallocRooms(Room*** roomsPtr, int* allocRoomsSize, int expectedSize){
+    if (expectedSize >= *allocRoomsSize){ 
+        Room** newPtr = realloc(*roomsPtr, sizeof(Room*) * (expectedSize+20)); //reallocate memory (expected size)
+        if (newPtr == NULL){
+            perror("Could not reallocate memory for rooms");
+            return;
+        }
+        *roomsPtr = newPtr;
+        (*allocRoomsSize) = (expectedSize+20);
+        printf("\nReallocating: %d %d", *allocRoomsSize, expectedSize);
+    }
+}
 
-        int noOfConnections = (rand()%4)+1; // we want at least 1 connection
-        // printf("\nRand: %d\n", noOfConnections);
-        // printf("\nNo rooms: %d\n", *roomCount);
-        // printf("\nNo rooms to add: %d\n", noRoomsToAdd);
+void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsToAdd, int* allocRoomsSize){
+    reallocRooms(roomsPtr, allocRoomsSize, (*roomCount + noRoomsToAdd)); // only reallocate if needed
 
-        for (int i=0; i<noOfConnections; i++){
-            if (*roomCount >= noRoomsToAdd) break;
+    Room** rooms = (*roomsPtr);
 
-            int direction = (rand()%4); // need to handle multiple same connections, like (1, 1)
-            Room* newRoom = Room_construct(*roomCount, "Test", "Test room", NULL, NULL, NULL, NULL, NULL, items, 0);
+    Queue roomQueue; //maybe change to roomLevelQueue;
+    Queue_init(&roomQueue);
+
+    enqueue(&roomQueue, firstRoom->ID);
+
+    // Iteratively expand using Breath First Search approach;
+    int addedRoomsCount = 0;
+    while ((isEmpty(&roomQueue) == false) && (addedRoomsCount < noRoomsToAdd)){
+        Room* room = rooms[peek(&roomQueue)->data]; //this is fine because it would not enter if queue is empty
+
+        // we want at least 2 connections, 1 for previous connection and at least 1 for next
+        int noOfConnections = generateRandomInt(2, MAX_DIRECTIONS); 
+        
+        int directions[MAX_DIRECTIONS]; // List of connected directions
+        for (int i=0;i<MAX_DIRECTIONS;i++){
+            directions[i] = DNE;
+        }
+        // Prefill directions with already existing connections so won't be repeated;
+        int filledCount = 0;
+        if (room->north != NULL){
+            directions[filledCount] = NorthIndex;
+            filledCount ++;
+        }
+        if (room->south != NULL){
+            directions[filledCount] = SouthIndex;
+            filledCount ++;
+        }
+        if (room->west != NULL){
+            directions[filledCount] = WestIndex;
+            filledCount ++;
+        }
+        if (room->east != NULL){
+            directions[filledCount] = EastIndex;
+            filledCount ++;
+        }
+
+        generateRandomIntArr(directions, 0, MAX_DIRECTIONS-1, noOfConnections, filledCount);
+
+        printf("\nRoom ID: %d, Connections: %d, Filled: %d", room->ID, noOfConnections, filledCount);
+        for (int i=0;i<MAX_DIRECTIONS;i++){
+            printf("\ndirections[%d]: %d", i, directions[i]);
+        }
+
+        // Basically a new room has at most filledCount(probably 1) connections already
+        for (int i=filledCount; i<(noOfConnections-filledCount); i++){
+            if (addedRoomsCount >= noRoomsToAdd) break;
+
+            int direction = directions[i];
+            Room* newRoom = constructRandomRoom(*roomCount);
             
             if (newRoom == NULL){
                 perror("Could not create room");
                 return;
             }
             switch(direction){
-                case 0: // North
+                case NorthIndex:
                     room->north = newRoom;
                     newRoom->south = room;
-                    enqueue(roomQueue, newRoom->ID);
+                    enqueue(&roomQueue, newRoom->ID);
                     break;
-                case 1: // South
+                case SouthIndex:
                     room->south = newRoom;
                     newRoom->north = room;
-                    enqueue(roomQueue, newRoom->ID);
+                    enqueue(&roomQueue, newRoom->ID);
                     break;
-                case 2: // West
+                case WestIndex:
                     room->west = newRoom;
                     newRoom->east = room;
-                    enqueue(roomQueue, newRoom->ID);
+                    enqueue(&roomQueue, newRoom->ID);
                     break;
-                case 3: // East 
+                case EastIndex:
                     room->east = newRoom;
                     newRoom->west = room;
-                    enqueue(roomQueue, newRoom->ID);
+                    enqueue(&roomQueue, newRoom->ID);
                     break;
             }
             rooms[newRoom->ID] = newRoom;
-            (*roomCount)++;
-            // printf("\nNo rooms: %d\n", *roomCount);
+            (*roomCount) ++;
+            addedRoomsCount ++;
         }
-        dequeue(roomQueue);
-        printQueue(roomQueue);
+        dequeue(&roomQueue);
+        printQueue(&roomQueue);
     }
+    clearQueue(&roomQueue);
 }
 
 void displayRoom(Room* room){
@@ -157,8 +184,9 @@ void displayRoom(Room* room){
         return;
     }
     printf("\nRoom - ID: %d\tName: %s\tDescription: %s", room->ID, room->name, room->description);
-    printf("\nItems in room (%d): ", room->itemsCount);
-    displayItems(room->items, room->itemsCount, MAX_ITEMS_IN_ROOM);
+    printf("\nItems in room (%d): ", itemListCount(room->items));
+    printItemList(room->items);
+    printf("\nRoom Connections: %d %d %d %d", room->north != NULL?room->north->ID:DNE, room->south != NULL?room->south->ID:DNE, room->west != NULL?room->west->ID:DNE, room->east != NULL?room->east->ID:DNE);
     printf("\n");
 }
 
@@ -173,17 +201,22 @@ void displayRooms(Room** rooms, int roomCount){
     }
 }
 
-void freeRooms(Room** rooms, int* roomCount){
-    if (*roomCount == 0){
+void freeRooms(Room*** roomsPtr, int* roomCount){
+    Room** rooms = *roomsPtr;
+    if ((*roomCount == 0) && (rooms == NULL)){
         printf("\nThere are no rooms to free!");
         return;
     }
-    for (int i=0; i<*roomCount; i++){
-        Room_destroy(rooms[i]);
+    
+    for (int i=0; i<(*roomCount); i++){
+        if (rooms[i] != NULL){
+            Room_destroy(rooms[i]);
+        }
     }
 
     *roomCount = 0;
     free(rooms);
+    *roomsPtr = NULL;
 }
 
 
@@ -306,64 +339,64 @@ void freeRooms(Room** rooms, int* roomCount){
 //     return EXIT_SUCCESS;
 // }
 
-void serializeRoom(Room* room, char* line){
-    // Or just do fprintf(f, "%d", room->ID);
-    // 12 is the Maximum character length for an integer 2147483647
-    char roomIDStr[12];
-    sprintf(roomIDStr, "%d", room->ID);
-    strcat(line, roomIDStr);
-    strcat(line, ",");
+// void serializeRoom(Room* room, char* line){
+//     // Or just do fprintf(f, "%d", room->ID);
+//     // 12 is the Maximum character length for an integer 2147483647
+//     char roomIDStr[12];
+//     sprintf(roomIDStr, "%d", room->ID);
+//     strcat(line, roomIDStr);
+//     strcat(line, ",");
 
-    strcat(line, room->name);
-    strcat(line, ",");
-    strcat(line, room->description);
-    strcat(line, ",");
+//     strcat(line, room->name);
+//     strcat(line, ",");
+//     strcat(line, room->description);
+//     strcat(line, ",");
 
-    if (room->north != NULL){
-        char northIDStr[12];
-        sprintf(northIDStr, "%d", room->north->ID);
-        strcat(line, northIDStr);
-    }else{
-        strcat(line, "NULL");
-    }
-    strcat(line, ",");
+//     if (room->north != NULL){
+//         char northIDStr[12];
+//         sprintf(northIDStr, "%d", room->north->ID);
+//         strcat(line, northIDStr);
+//     }else{
+//         strcat(line, "NULL");
+//     }
+//     strcat(line, ",");
 
-    if (room->south != NULL){
-        char southIDStr[12];
-        sprintf(southIDStr, "%d", room->south->ID);
-        strcat(line, southIDStr);
-    }else{
-        strcat(line, "NULL");
-    }
-    strcat(line, ",");
+//     if (room->south != NULL){
+//         char southIDStr[12];
+//         sprintf(southIDStr, "%d", room->south->ID);
+//         strcat(line, southIDStr);
+//     }else{
+//         strcat(line, "NULL");
+//     }
+//     strcat(line, ",");
 
-    if (room->west != NULL){
-        char westIDStr[12];
-        sprintf(westIDStr, "%d", room->west->ID);
-        strcat(line, westIDStr);
-    }else{
-        strcat(line, "NULL");
-    }
-    strcat(line, ",");
+//     if (room->west != NULL){
+//         char westIDStr[12];
+//         sprintf(westIDStr, "%d", room->west->ID);
+//         strcat(line, westIDStr);
+//     }else{
+//         strcat(line, "NULL");
+//     }
+//     strcat(line, ",");
     
-    if (room->east != NULL){
-        char eastIDStr[12];
-        sprintf(eastIDStr, "%d", room->east->ID);
-        strcat(line, eastIDStr);
-    }else{
-        strcat(line, "NULL");
-    }
+//     if (room->east != NULL){
+//         char eastIDStr[12];
+//         sprintf(eastIDStr, "%d", room->east->ID);
+//         strcat(line, eastIDStr);
+//     }else{
+//         strcat(line, "NULL");
+//     }
 
-    for (int i=0;i<room->itemsCount;i++){
-        strcat(line, ",");
-        char itemIDStr[12];
-        sprintf(itemIDStr, "%d", room->items[i]->ID);
-        strcat(line, itemIDStr);
-    }
+//     for (int i=0;i<room->itemsCount;i++){
+//         strcat(line, ",");
+//         char itemIDStr[12];
+//         sprintf(itemIDStr, "%d", room->items[i]->ID);
+//         strcat(line, itemIDStr);
+//     }
 
-    strcat(line, "\n");
-    // printf("\n%s", line);
-}
+//     strcat(line, "\n");
+//     // printf("\n%s", line);
+// }
 
 // int saveLayout(char* layoutStateFPath, Room* rooms[], int roomCount){
 //     FILE* f = fopen(layoutStateFPath, "w");

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../include/global.h"
 #include "../include/fileio.h"
 #include "../include/event.h"
 
@@ -24,15 +25,33 @@ int saveLayout(const char* layoutStateFPath, Room** rooms, int roomCount) {
                 (room->west ? room->west->ID : DNE),
                 (room->east ? room->east->ID : DNE));
 
-        int arr[MAX_ROOM_EVENTS];
-        eventListToArray(room->events, arr, MAX_ROOM_EVENTS);
-        for (int j = 0; j < MAX_ROOM_EVENTS; j++) {
-            fprintf(file, "%d,", arr[j]);
+        // This loops twice
+        // int arr[MAX_ROOM_EVENTS];
+        // eventListToArray(room->events, arr, MAX_ROOM_EVENTS);
+        // for (int j = 0; j < MAX_ROOM_EVENTS; j++) {
+        //     fprintf(file, "%d,", arr[j]);
+        // }
+        
+        EventNode* currEvent = room->events;
+        for (int j=0; j<MAX_ROOM_EVENTS; j++){
+            if (currEvent == NULL){
+                fprintf(file, "%d,", DNE);
+            }else{
+                fprintf(file, "%d,", currEvent->data);
+                currEvent = currEvent->next;
+            }
+        }
+
+        ItemNode* currItem = room->items;
+        for (int j=0; j<MAX_ITEMS_IN_ROOM; j++){
+            if (currItem == NULL){
+                fprintf(file, "%d,", DNE);
+            }else{
+                fprintf(file, "%d,", currItem->data->ID);
+                currItem = currItem->next;
+            }
         }
         
-        for (int j = 0; j < room->itemsCount; j++) {
-            fprintf(file, "%d,", room->items[j]->ID);
-        }
         fprintf(file, "\n");
     }
 
@@ -40,7 +59,7 @@ int saveLayout(const char* layoutStateFPath, Room** rooms, int roomCount) {
     return EXIT_SUCCESS;
 }
 
-int loadLayout(const char* layoutStateFPath, Room** rooms, int* roomCount) {
+int loadLayout(const char* layoutStateFPath, Room*** roomsPtr, int* roomCount, int* allocRoomSize) {
     FILE* file = fopen(layoutStateFPath, "r");
 
     if (file == NULL) {
@@ -50,8 +69,21 @@ int loadLayout(const char* layoutStateFPath, Room** rooms, int* roomCount) {
 
     fscanf(file, "%d", roomCount);
 
+    reallocRooms(roomsPtr, allocRoomSize, *roomCount);
+    Room** rooms = *roomsPtr;
+
+    // Allocate memory for roomCount rooms
+    for (int i=0; i<*roomCount;i++){
+        Room* room = malloc(sizeof(Room));
+        if (room == NULL){
+            printf("\nCould not create room");
+            rooms[i] = NULL; // Not sure about this part (It is supposed to fill every space of failed allocation with null)
+            continue;
+        }
+        rooms[i] = room;
+    }
+
     for (int i = 0; i < *roomCount; i++) {
-        rooms[i] = (Room*)malloc(sizeof(Room));
         if (rooms[i] == NULL) {
             printf("Memory allocation failed for room %d\n", i);
             continue;
@@ -70,23 +102,23 @@ int loadLayout(const char* layoutStateFPath, Room** rooms, int* roomCount) {
         rooms[i]->south = (southID != DNE) ? rooms[southID] : NULL;
         rooms[i]->west = (westID != DNE) ? rooms[westID] : NULL;
         rooms[i]->east = (eastID != DNE) ? rooms[eastID] : NULL;
-        rooms[i]->itemsCount = 0;
 
         rooms[i]->events = NULL;
         for (int j=0; j<MAX_ROOM_EVENTS; j++){
             int event;
             fscanf(file, "%d,", &event);
             if (event != DNE){
-                rooms[i]->events = EventList_insert(rooms[i]->events, event);
+                EventList_insert(&rooms[i]->events, event);
             }
         }
 
-        while (fgetc(file) != '\n' && !feof(file)) {
-            fseek(file, -1, SEEK_CUR); // Go back one char from current position(fgetc pushed it forward)
+        rooms[i]->items = NULL;
+        for (int j=0; j<MAX_ITEMS_IN_ROOM; j++){
             int itemID;
             fscanf(file, "%d,", &itemID);
-            rooms[i]->items[rooms[i]->itemsCount] = Item_construct(itemID);
-            rooms[i]->itemsCount++;
+            if (itemID != DNE){
+                ItemList_insert(&rooms[i]->items, Item_construct(itemID));
+            }
         }
     }
 
@@ -103,9 +135,14 @@ int savePlayerState(const char* playerStateFPath, Player* player) {
     }
 
     fprintf(file, "%s,%d,%d,%d,", player->name, player->currentRoom, player->health, player->score);
-    for (int i = 0; i < MAX_PLAYER_ITEMS; i++) {
-        if (player->inventory[i] != NULL) {
-            fprintf(file, "%d,", player->inventory[i]->ID);
+
+    ItemNode* currItem = player->inventory;
+    for (int i=0; i<MAX_PLAYER_ITEMS; i++){
+        if (currItem == NULL){
+            fprintf(file, "%d,", DNE);
+        }else{
+            fprintf(file, "%d,", currItem->data->ID);
+            currItem = currItem->next;
         }
     }
 
@@ -123,12 +160,14 @@ int loadPlayerState(const char* playerStateFPath, Player* player) {
     }
 
     fscanf(file, "%9[^,],%d,%d,%d,", player->name, &player->currentRoom, &player->health, &player->score);
-    player->itemsCount = 0;
 
-    while (fgetc(file) != '\n' && !feof(file)) {
+    player->inventory = NULL;
+    for (int j=0; j<MAX_ITEMS_IN_ROOM; j++){
         int itemID;
         fscanf(file, "%d,", &itemID);
-        player->inventory[player->itemsCount++] = Item_construct(itemID);
+        if (itemID != DNE){
+            ItemList_insert(&player->inventory, Item_construct(itemID));
+        }
     }
 
     fclose(file);

@@ -17,12 +17,8 @@ Player* Player_construct(char* name, int currentRoom, int health, int score, Roo
     player->currentRoom = currentRoom;
     player->health = health;
     player->score = score;
-    player->itemsCount = 0;
-
-    for (int i=0; i<MAX_PLAYER_ITEMS; i++){
-        player->inventory[i] = NULL;
-    }
-
+    
+    player->inventory = NULL;
     player->currentRoomPtr = currentRoomPtr;
 
     return player;
@@ -34,8 +30,8 @@ void displayPlayer(Player* player){
 }
 
 void displayPlayerInventory(Player* player){
-    printf("\nItems in inventory (%d): ", player->itemsCount);
-    displayItems(player->inventory, player->itemsCount, MAX_PLAYER_ITEMS);
+    printf("\nItems in inventory (%d): ", itemListCount(player->inventory));
+    printItemList(player->inventory);
 }
 
 void updatePlayerRoom(Player* player, Room* currentRoom){
@@ -44,79 +40,38 @@ void updatePlayerRoom(Player* player, Room* currentRoom){
 }
 
 void pickUpItem(Player* player, int pickupItemID){
-    Item* pickupTargetItem = NULL;
+    if (itemListCount(player->inventory) >= MAX_PLAYER_ITEMS){
+        printf("\nInventory is full. Cannot pick up item.");
+        return;
+    }
 
     // Find the item with matching ID in the current room
-    for (int i = 0; i < player->currentRoomPtr->itemsCount; i++) {
-        if (
-            player->currentRoomPtr->items[i] != NULL && 
-            player->currentRoomPtr->items[i]->ID == pickupItemID
-        ) {
-            pickupTargetItem = player->currentRoomPtr->items[i];
-            break;
-        }
-    }
+    Item* pickupTargetItem = ItemList_deleteItemID(&player->currentRoomPtr->items, pickupItemID);
     if (pickupTargetItem == NULL) {
         printf("\nInvalid item ID\n");
         return;
     }
 
-    if (player->itemsCount >= MAX_PLAYER_ITEMS){
-        printf("\nInventory is full. Cannot pick up item.");
-        return;
-    }
-
-    player->inventory[player->itemsCount] = pickupTargetItem;
-    player->itemsCount++;
-
-    // Remove item from room, make sure item that is passed is in the current room
-    for (int i=0; i<player->currentRoomPtr->itemsCount; i++){
-        if (player->currentRoomPtr->items[i] == pickupTargetItem){
-            player->currentRoomPtr->items[i] = NULL;
-            player->currentRoomPtr->itemsCount--;
-            break;
-        }
-    }
+    // Add item to player inventory
+    ItemList_insert(&player->inventory, pickupTargetItem);
 }
 
 void dropItem(Player* player, int dropItemID){
-    Item* dropTargetItem = NULL;
-
-    // Find the item with matching ID in the player's inventory
-    for (int i = 0; i < player->itemsCount; i++) {
-        if (
-            player->inventory[i] != NULL && 
-            player->inventory[i]->ID == dropItemID
-        ) {
-            dropTargetItem = player->inventory[i];
-            break;
-        }
-    }
-    if (dropTargetItem == NULL) {
-        printf("\nInvalid item ID\n");
-        return;
-    }
-    if (player->itemsCount == 0){
+    if (itemListCount(player->inventory) == 0){
         printf("\nInventory is empty. Cannot drop item.");
         return;
     }
 
-    for (int i=0; i<player->itemsCount; i++){
-        if (player->inventory[i] == dropTargetItem){
-            player->inventory[i] = NULL;
-            player->itemsCount--;
-            break;
-        }
+    // Find the item with matching ID in the player's inventory
+    Item* dropTargetItem = ItemList_deleteItemID(&player->inventory, dropItemID);
+
+    if (dropTargetItem == NULL) {
+        printf("\nInvalid item ID\n");
+        return;
     }
 
     // Add item to room
-    for (int i=0; i<MAX_ITEMS_IN_ROOM; i++){
-        if (player->currentRoomPtr->items[i] == NULL){
-            player->currentRoomPtr->items[i] = dropTargetItem;
-            player->currentRoomPtr->itemsCount++;
-            break;
-        }
-    }
+    ItemList_insert(&player->currentRoomPtr->items, dropTargetItem);
 }
 
 void decreasePlayerHealth(Player* player, int damage){
@@ -132,7 +87,7 @@ void increasePlayerScore(Player* player, int score){
 }
 
 void freePlayer(Player* player){
-    // freeItems(player->inventory, &player->itemsCount);
+    freeItemList(&player->inventory);
     free(player);
 }
 

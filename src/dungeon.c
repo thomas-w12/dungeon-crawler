@@ -26,7 +26,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom) {
             break;
         case PICKUP:
             // if there is an item in the room
-            if (currentRoom->itemsCount == 0){
+            if (itemListCount(currentRoom->items) == 0){
                 printf("\nThere are no items to pick up:\n");
                 exploreDungeon(currentRoom, player, false);
                 break;
@@ -41,7 +41,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom) {
             exploreDungeon(currentRoom, player, false);
             break;
         case DROP:
-            if (player->itemsCount == 0){
+            if (itemListCount(player->inventory) == 0){
                 printf("\nThere are no items in your inventory:\n");
                 exploreDungeon(currentRoom, player, false);
                 break;
@@ -51,7 +51,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom) {
             dropItem(player, dropItemID);
             exploreDungeon(currentRoom, player, false);
             break;
-        case NORTH:
+        case NORTH: // If there is no path and already traversed path includes 90% of the room count the expand current room to create more path
             if (currentRoom->north == NULL) {
                 printf("\nThere is no path on the north.\n");
                 exploreDungeon(currentRoom, player, false);

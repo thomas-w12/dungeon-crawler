@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wshadow -Wextra -I./include
+CDEBUGER = gdb
+CFLAGS = -g -Wall -Wshadow -Wextra -I./include
 EXE = dungeon_crawler.exe
 
 SRCDIR = src
@@ -33,3 +34,6 @@ clean:
 
 run:
 	./$(EXE)
+
+debug:
+	$(CDEBUGER) ./$(EXE)

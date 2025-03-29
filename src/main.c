@@ -8,6 +8,7 @@
 #include "../include/item.h"
 #include "../include/dungeon.h"
 #include "../include/event.h"
+#include "../include/global.h"
 
 
 int main() {
@@ -20,7 +21,6 @@ int main() {
         perror("Could not allocate memory for rooms");
         return EXIT_FAILURE;
     }
-    // Room** rooms = malloc(sizeof(Room*)*MAX_ROOMS); // should be * initial rooms alloc size
     
     char layoutStateFPath[] = {"saved_games/layoutState.txt"};
     char playerStateFPath[] = {"saved_games/playerState.txt"};
@@ -29,20 +29,30 @@ int main() {
     Item* item2 = Item_construct(1);
     Item* item3 = Item_construct(2);
     Item* item4 = Item_construct(3);
-    
-    Item* itemsArrRoom1[] = {item1, item2, item3, item4}; 
-    int itemsLengthRoom1 = sizeof(itemsArrRoom1) / sizeof(Item*);  
 
-    EventNode* events = EventNode_construct(TRAP);
+    ItemNode* itemsHead = NULL;
+    ItemList_insert(&itemsHead, item1);
+    ItemList_insert(&itemsHead, item2);
+    ItemList_insert(&itemsHead, item3);
+    ItemList_insert(&itemsHead, item4);
     
-    // Room* room = Room_construct(0, "Trap", "This is a trap room", events, NULL, NULL, NULL, NULL, itemsArrRoom1, itemsLengthRoom1);
+    printItemList(itemsHead);
+    ItemList_deleteAtIndex(&itemsHead, 3);
+    printItemList(itemsHead);
+    
+    EventNode* events = NULL;
+    EventList_insert(&events, TRAP);
+    EventList_insert(&events, PUZZLE);
+    EventList_insert(&events, BLOCKED);
+    printEventList(events);
+    
+    // Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, events, itemsHead);
     // Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
-    Player* player = Player_construct("Player", 0, 100, 0, NULL);
-
+    Player* player = Player_construct("Player", 0, 100, 0, NULL); // We need this store player inventory
 
     // if (room != NULL){
-    //     room->south = room1;
+    //     // room->south = room1;
     //     rooms[room->ID] = room;
     //     roomCount ++;
     //     // displayRoom(room);
@@ -53,10 +63,13 @@ int main() {
     //     roomCount ++;
     //     // displayRoom(room1);
     // }
-    generateLayout(&rooms, &roomCount, 10, &allocRoomSize);
-    displayRooms(rooms, roomCount);
+
+    // generateLayout(&rooms, &roomCount, 20, &allocRoomSize);
+
+    // expandRoom(&rooms, room, &roomCount, 20, &allocRoomSize);
+    loadLayout(layoutStateFPath, &rooms, &roomCount, &allocRoomSize);
+    // displayRooms(rooms, roomCount);
     // saveLayout(layoutStateFPath, rooms, roomCount);
-    // loadLayout(layoutStateFPath, rooms, &roomCount);
 
     // savePlayerState(playerStateFPath, player);
     // loadPlayerState(playerStateFPath, player);
@@ -67,9 +80,9 @@ int main() {
 
     // saveLayout(layoutStateFPath, rooms, roomCount);
     // savePlayerState(playerStateFPath, player);
-
-    freeRooms(rooms, &roomCount);
-    freeItems(itemsArrRoom1, &itemsLengthRoom1);
+    
+    freeRooms(&rooms, &roomCount);
+    // freeItemList(&itemsHead);
 
     return EXIT_SUCCESS;
 }

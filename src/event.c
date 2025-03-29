@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../include/global.h"
 #include "../include/event.h"
 
 
@@ -17,17 +18,17 @@ EventNode* EventNode_construct(Event event){
     return eventNode;
 }
 
-EventNode* EventList_insert(EventNode* head, Event event){
+EventNode* EventList_insert(EventNode** head, Event event){
     EventNode* eventNode = EventNode_construct(event);
     if (eventNode == NULL){
         perror("Failed Event List insert");
         return NULL;
     }
     // cannot have duplicate events
-    if (head == NULL){
-        head = eventNode;
+    if (*head == NULL){
+        *head = eventNode;
     }else{
-        EventNode* curr = head;
+        EventNode* curr = *head;
 
         while(curr->next != NULL){
             if (curr->data == event){
@@ -43,21 +44,21 @@ EventNode* EventList_insert(EventNode* head, Event event){
     return eventNode;
 }
 
-void EventList_delete(EventNode* head, Event event){
-    if (head == NULL){
+void EventList_delete(EventNode** head, Event event){
+    if (*head == NULL){
         return;
-    }else if (head->data == event){
-        if (head->next == NULL){
+    }else if ((*head)->data == event){
+        if ((*head)->next == NULL){
             free(head);
             head = NULL;
             return;
         }
-        EventNode* temp = head->next;
-        free(head);
-        head = temp;
+        EventNode* temp = (*head)->next;
+        free(*head);
+        *head = temp;
     }else{
-        EventNode* prev = head;
-        EventNode* curr = head->next;
+        EventNode* prev = *head;
+        EventNode* curr = (*head)->next;
 
         while((curr != NULL) && (curr->data != event)){
             prev = curr;
@@ -107,6 +108,7 @@ void freeEventList(EventNode* head){
 }
 
 void printEventList(EventNode* head){
+    printf("\n");
     EventNode* curr = head;
     while (curr != NULL){
         printf("%d->", curr->data);
