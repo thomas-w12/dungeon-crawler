@@ -9,18 +9,22 @@
 int main() {
     srand(time(0));
 
-    // Create a starting room
-    Room* startingRoom = malloc(sizeof(Room));
-    startingRoom->ID = 0;
-    strcpy(startingRoom->name, "Room1");
-    strcpy(startingRoom->description, "This is the starting room.");
-    startingRoom->items = NULL;
-
-    // Add items to the room
+    // Create items to be added to the room
     Item* item1 = Item_construct(0);
     Item* item2 = Item_construct(1);
-    ItemList_insert(&startingRoom->items, item1);
-    ItemList_insert(&startingRoom->items, item2);
+    Item* item3 = Item_construct(2);
+
+    ItemNode* itemsHead = NULL;
+    ItemList_insert(&itemsHead, item1);
+    ItemList_insert(&itemsHead, item2);
+    ItemList_insert(&itemsHead, item3);
+
+    // create room
+    Room* startingRoom = Room_construct(0, "Starting Room", "This is the starting room.", NULL, NULL, NULL, NULL, NULL, itemsHead);
+    if (startingRoom == NULL) {
+        printf("Error creating starting room.\n");
+        return EXIT_FAILURE;
+    }
 
     // Create a player
     Player* player = Player_construct("Hero", startingRoom->ID, 100, 50, startingRoom);

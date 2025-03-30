@@ -8,7 +8,7 @@
 #define MAX_PLAYER_ITEMS 3
 
 typedef struct Player {
-    char name[10]; // Tell player to enter name at begining. Max length of about 10 characters
+    char* name; 
     int currentRoom; //ID of current room (This is redundant)
     Room* currentRoomPtr; // Pointer to current room
     int health; // Health bar

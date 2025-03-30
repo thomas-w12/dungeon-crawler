@@ -19,6 +19,9 @@ void Room_destroy(Room* room){
         room->east->west = room->west;
     }
     
+    free(room->name);
+    free(room->description);
+
     freeEventList(room->events);
     freeItemList(&room->items);
     free(room);
@@ -37,8 +40,19 @@ Room* Room_construct(int ID, char* name, char* description, Room* north, Room* s
     }
 
     room->ID = ID;
-    strcpy(room->name, name);
-    strcpy(room->description, description);
+    room->name = strdup(name);
+    if (room->name == NULL){
+        printf("\nCould not create room name");
+        free(room);
+        return NULL;
+    }
+    room->description = strdup(description);
+    if (room->description == NULL){
+        printf("\nCould not create room description");
+        free(room->name);
+        free(room);
+        return NULL;
+    }
     room->north = north;
     room->south = south;
     room->west = west;

@@ -90,14 +90,14 @@ int loadLayout(const char* layoutStateFPath, Room*** roomsPtr, int* roomCount, i
         }
 
         int id, northID, southID, westID, eastID;
-        char name[10], description[30];
+        char nameBuffer[256], descriptionBuffer[512]; // Temporary buffers for reading strings
 
-        fscanf(file, "%d,%10[^,],%30[^,],%d,%d,%d,%d,", 
-               &id, name, description, &northID, &southID, &westID, &eastID); //30 here reads at most 30 characters as the description and 10 as the name
+        fscanf(file, "%d,%255[^,],%511[^,],%d,%d,%d,%d,", 
+               &id, nameBuffer, descriptionBuffer, &northID, &southID, &westID, &eastID);
 
         rooms[i]->ID = id;
-        strcpy(rooms[i]->name, name);
-        strcpy(rooms[i]->description, description);
+        rooms[i]->name = strdup(nameBuffer); // Dynamically allocate and copy the name
+        rooms[i]->description = strdup(descriptionBuffer); // Dynamically allocate and copy the description
         rooms[i]->north = (northID != DNE) ? rooms[northID] : NULL;
         rooms[i]->south = (southID != DNE) ? rooms[southID] : NULL;
         rooms[i]->west = (westID != DNE) ? rooms[westID] : NULL;
@@ -159,8 +159,11 @@ int loadPlayerState(const char* playerStateFPath, Player* player) {
         return EXIT_FAILURE;
     }
 
-    fscanf(file, "%9[^,],%d,%d,%d,", player->name, &player->currentRoom, &player->health, &player->score);
+    char nameBuffer[256]; // Temporary buffer for reading the name
+    fscanf(file, "%255[^,],%d,%d,%d,", nameBuffer, &player->currentRoom, &player->health, &player->score);
 
+    player->name = strdup(nameBuffer); // Dynamically allocate and copy the name
+    
     player->inventory = NULL;
     for (int j=0; j<MAX_ITEMS_IN_ROOM; j++){
         int itemID;

@@ -24,8 +24,8 @@ typedef enum DirectionsIndex{
 
 typedef struct Room{
     int ID; 
-    char name[10];
-    char description[30];
+    char* name;
+    char* description;
     struct Room *north;
     struct Room *south;
     struct Room *east;
