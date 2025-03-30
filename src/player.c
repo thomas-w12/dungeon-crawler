@@ -13,7 +13,12 @@ Player* Player_construct(char* name, int currentRoom, int health, int score, Roo
         return NULL;
     }
 
-    strcpy(player->name, name);
+    player->name = strdup(name);
+    if (player->name == NULL){
+        printf("\nCould not create player name");
+        free(player);
+        return NULL;
+    }
     player->currentRoom = currentRoom;
     player->health = health;
     player->score = score;
@@ -89,6 +94,10 @@ void increasePlayerScore(Player* player, int score){
 }
 
 void freePlayer(Player* player){
+    if (player == NULL){
+        return;
+    }
+    free(player->name);
     freeItemList(&player->inventory);
     free(player);
 }

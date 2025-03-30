@@ -24,9 +24,19 @@ $(OBJDIR)/%.obj: %.c | $(OBJDIR)
 $(OBJDIR):
 	@if not exist $(OBJDIR) mkdir $(OBJDIR)
 
-test: $(TEST_OBJS)
-	$(CC) $(CFLAGS) $(TEST_OBJS) -o $(OBJDIR)/test_runner.exe
-	$(OBJDIR)/test_runner.exe
+layout_save_load_test: $(OBJDIR)/layout_save_load_test.o $(OBJS)
+	$(CC) $(CFLAGS) $(OBJDIR)/layout_save_load_test.o $(OBJS) -o $(OBJDIR)/layout_save_load_test_runner
+	$(OBJDIR)/layout_save_load_test_runner
+
+player_save_load_test: $(OBJDIR)/player_save_load_test.o $(OBJS)
+	$(CC) $(CFLAGS) $(OBJDIR)/player_save_load_test.o $(OBJS) -o $(OBJDIR)/player_save_load_test_runner
+	$(OBJDIR)/player_save_load_test_runner
+
+sample_test: $(OBJDIR)/sample_test.o $(OBJS)
+	$(CC) $(CFLAGS) $(OBJDIR)/sample_test.o $(OBJS) -o $(OBJDIR)/sample_test_runner
+	$(OBJDIR)/sample_test_runner
+
+test: player_save_load_test layout_save_load_test
 
 clean:
 	@if exist $(EXE) del /f /q $(EXE)
