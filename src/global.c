@@ -46,7 +46,7 @@ int* generateRandomIntArrProb(int* arr, int arrSize, int start, int end, int* nu
     for (int i=0; i<numberOccurenceProbArrCount; i++){
         probSum += numberOccurenceProbArr[i];
     }
-    printf("\nSum: %d", probSum);
+    // printf("\nSum: %d", probSum);
     if (probSum < 100) return NULL; // Because might cause an inifinite loop;
 
     int* numberOccurenceArr = calloc(numberOccurenceProbArrCount, sizeof(int));

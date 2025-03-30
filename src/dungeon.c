@@ -1,16 +1,19 @@
 #include "../include/dungeon.h"
 
+void displayMenuScreen(Room* currentRoom){
+    displayRoom(currentRoom);
+
+    printf("\nWhat would you like to do?\nP - pick up item\nU - use item\nD - drop item\nI - show inventory\nN - go north\nS - go south\nW - go west\nE - go east\nQ - quit\n");
+}
+
+
 void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom){ // Maybe use displayRoom
     triggerEvent(currentRoom, player);
     // Update player's current room
     updatePlayerRoom(player, currentRoom);
     if (isNewRoom == true){
-        // Display current room
-        displayRoom(currentRoom);
+        displayMenuScreen(currentRoom);
         //add roomId to path
-
-        // int choice = parse_room_command();
-        printf("\nWhat would you like to do?\nP - pick up item\nU - use item\nD - drop item\nI - show inventory\nN - go north\nS - go south\nW - go west\nE - go east\nQ - quit\n");
     }
 
     char choice;
@@ -35,6 +38,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom){ // Maybe
             printf("\nEnter the item ID to pick up:\n");
             int pickupItemID = parse_item_command();
             pickUpItem(player, pickupItemID);
+            displayMenuScreen(currentRoom);
             exploreDungeon(currentRoom, player, false); // would like to redisplay room
             break;
         case USE:
@@ -50,6 +54,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom){ // Maybe
             printf("\nEnter the item ID to drop:\n");
             int dropItemID = parse_item_command();
             dropItem(player, dropItemID);
+            displayMenuScreen(currentRoom);
             exploreDungeon(currentRoom, player, false);
             break;
         case NORTH: // If there is no path and already traversed path includes 90% of the room count the expand current room to create more path

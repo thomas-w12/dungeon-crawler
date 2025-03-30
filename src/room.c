@@ -19,19 +19,12 @@ void Room_destroy(Room* room){
         room->east->west = room->west;
     }
     
-    free(room->name);
-    free(room->description);
-
-    freeEventList(room->events);
+    freeEventList(&room->events);
     freeItemList(&room->items);
     free(room);
 }
 
-void Room_copy(Room* src, Room* dest){
-
-}
-
-Room* Room_construct(int ID, char* name, char* description, Room* north, Room* south, Room* west, Room* east, EventNode* events, ItemNode* items){
+Room* Room_construct(int ID, Room* north, Room* south, Room* west, Room* east, EventNode* events, ItemNode* items){
     // Thinking of adding Room** rooms and int* roomCount to the signature so anytime a room is constructed, addition to rooms and increasing room count would be done in one function; (or maybe it should be done in addRoom())
     Room* room = malloc(sizeof(Room));
     if (room == NULL){
@@ -40,19 +33,6 @@ Room* Room_construct(int ID, char* name, char* description, Room* north, Room* s
     }
 
     room->ID = ID;
-    room->name = strdup(name);
-    if (room->name == NULL){
-        printf("\nCould not create room name");
-        free(room);
-        return NULL;
-    }
-    room->description = strdup(description);
-    if (room->description == NULL){
-        printf("\nCould not create room description");
-        free(room->name);
-        free(room);
-        return NULL;
-    }
     room->north = north;
     room->south = south;
     room->west = west;
@@ -83,10 +63,10 @@ Room* constructRandomRoom(int roomCount, int noItems, int noEvents){
     generateRandomIntArr(eventsArr, noEvents, 0, TOTAL_ITEMS_COUNT-1, 0);  // -1 becuse index starts from 0
     for (int i=0; i<noEvents; i++){
         int eventNum = eventsArr[i];
-        EventList_insert(&events, i);
+        EventList_insert(&events, eventNum);
     }
     
-    Room* room = Room_construct(roomCount, "Test", "Test room", NULL, NULL, NULL, NULL, events, items);
+    Room* room = Room_construct(roomCount, NULL, NULL, NULL, NULL, events, items);
 
     return room;
 }
@@ -220,7 +200,7 @@ void displayRoom(Room* room){
         printf("\nRoom does not exist");
         return;
     }
-    printf("\nRoom - ID: %d\tName: %s\tDescription: %s", room->ID, room->name, room->description);
+    printf("\nRoom - ID: %d", room->ID);
     printf("\nItems in room (%d): ", itemListCount(room->items));
     printItemList(room->items);
     printf("\nRoom Connections: %d %d %d %d", room->north != NULL?room->north->ID:DNE, room->south != NULL?room->south->ID:DNE, room->west != NULL?room->west->ID:DNE, room->east != NULL?room->east->ID:DNE);

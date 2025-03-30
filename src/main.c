@@ -25,26 +25,26 @@ int main() {
     char layoutStateFPath[] = {"saved_games/layoutState.txt"};
     char playerStateFPath[] = {"saved_games/playerState.txt"};
 
-    Item* item1 = Item_construct(0);
-    Item* item2 = Item_construct(1);
-    Item* item3 = Item_construct(2);
-    Item* item4 = Item_construct(3);
+    // Item* item1 = Item_construct(0);
+    // Item* item2 = Item_construct(1);
+    // Item* item3 = Item_construct(2);
+    // Item* item4 = Item_construct(3);
 
-    ItemNode* itemsHead = NULL;
-    ItemList_insert(&itemsHead, item1);
-    ItemList_insert(&itemsHead, item2);
-    ItemList_insert(&itemsHead, item3);
-    ItemList_insert(&itemsHead, item4);
+    // ItemNode* itemsHead = NULL;
+    // ItemList_insert(&itemsHead, item1);
+    // ItemList_insert(&itemsHead, item2);
+    // ItemList_insert(&itemsHead, item3);
+    // ItemList_insert(&itemsHead, item4);
     
-    printItemList(itemsHead);
-    ItemList_deleteAtIndex(&itemsHead, 3);
-    printItemList(itemsHead);
+    // printItemList(itemsHead);
+    // ItemList_deleteAtIndex(&itemsHead, 3);
+    // printItemList(itemsHead);
     
-    EventNode* events = NULL;
-    EventList_insert(&events, TRAP);
-    EventList_insert(&events, PUZZLE);
-    EventList_insert(&events, BLOCKED);
-    printEventList(events);
+    // EventNode* events = NULL;
+    // EventList_insert(&events, TRAP);
+    // EventList_insert(&events, PUZZLE);
+    // EventList_insert(&events, BLOCKED);
+    // printEventList(events);
     
     // Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, events, itemsHead);
     // Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, NULL, 0);
@@ -62,12 +62,12 @@ int main() {
     //     // displayRoom(room1);
     // }
 
-    generateLayout(&rooms, &roomCount, 10000, &allocRoomSize);
+    // generateLayout(&rooms, &roomCount, 10000, &allocRoomSize);
 
     // expandRoom(&rooms, room, &roomCount, 10, &allocRoomSize);
-    // loadLayout(layoutStateFPath, &rooms, &roomCount, &allocRoomSize);
+    loadLayout(layoutStateFPath, &rooms, &roomCount, &allocRoomSize);
     // displayRooms(rooms, roomCount);
-    saveLayout(layoutStateFPath, rooms, roomCount);
+    // saveLayout(layoutStateFPath, rooms, roomCount);
 
     // savePlayerState(playerStateFPath, player);
     // loadPlayerState(playerStateFPath, player);

@@ -9,8 +9,8 @@
 typedef struct Item{
     // Item type and description depends on the item id
     int ID;
-    char type[10];
-    char description[20];
+    char type[20];
+    char description[50];
 } Item;
 
 typedef struct ItemNode{

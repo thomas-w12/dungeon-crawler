@@ -102,9 +102,9 @@ void freeEventNode(EventNode* eventNode){
     free(eventNode);
 }
 
-void freeEventList(EventNode* head){
-    freeEventNode(head);
-    head = NULL;
+void freeEventList(EventNode** head){
+    freeEventNode(*head);
+    *head = NULL;
 }
 
 void printEventList(EventNode* head){

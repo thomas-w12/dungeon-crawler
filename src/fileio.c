@@ -17,7 +17,7 @@ int saveLayout(const char* layoutStateFPath, Room** rooms, int roomCount) {
 
     for (int i = 0; i < roomCount; i++) {
         Room* room = rooms[i];
-        fprintf(file, "%d,%s,%s,", room->ID, room->name, room->description);
+        fprintf(file, "%d,", room->ID);
 
         fprintf(file, "%d,%d,%d,%d,", 
                 (room->north ? room->north->ID : DNE),
@@ -90,14 +90,11 @@ int loadLayout(const char* layoutStateFPath, Room*** roomsPtr, int* roomCount, i
         }
 
         int id, northID, southID, westID, eastID;
-        char nameBuffer[256], descriptionBuffer[512]; // Temporary buffers for reading strings
 
-        fscanf(file, "%d,%255[^,],%511[^,],%d,%d,%d,%d,", 
-               &id, nameBuffer, descriptionBuffer, &northID, &southID, &westID, &eastID);
+        fscanf(file, "%d,%d,%d,%d,%d,", 
+               &id, &northID, &southID, &westID, &eastID);
 
         rooms[i]->ID = id;
-        rooms[i]->name = strdup(nameBuffer); // Dynamically allocate and copy the name
-        rooms[i]->description = strdup(descriptionBuffer); // Dynamically allocate and copy the description
         rooms[i]->north = (northID != DNE) ? rooms[northID] : NULL;
         rooms[i]->south = (southID != DNE) ? rooms[southID] : NULL;
         rooms[i]->west = (westID != DNE) ? rooms[westID] : NULL;

@@ -26,8 +26,6 @@ typedef enum DirectionsIndex{
 
 typedef struct Room{
     int ID; 
-    char* name;
-    char* description;
     struct Room *north;
     struct Room *south;
     struct Room *east;
@@ -38,7 +36,7 @@ typedef struct Room{
 } Room;
 
 void Room_destroy(Room* room);
-Room* Room_construct(int ID, char* name, char* description, Room* north, Room* south, Room* west, Room* east, EventNode* events, ItemNode* items);
+Room* Room_construct(int ID, Room* north, Room* south, Room* west, Room* east, EventNode* events, ItemNode* items);
 // Room* addRoom(char* name, char* description);
 // Room* parseRoom(char* line, Room* rooms[]);
 // void serializeRoom(Room* room, char* line);

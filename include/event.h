@@ -26,7 +26,7 @@ EventNode* EventList_insert(EventNode** head, Event event);
 void EventList_delete(EventNode** head, Event event);
 int eventListCount(EventNode* head);
 void freeEventNode(EventNode* eventNode);
-void freeEventList(EventNode* head);
+void freeEventList(EventNode** head);
 void eventListToArray(EventNode* head, int* arr, int arrSize);
 void printEventList(EventNode* head);
 
