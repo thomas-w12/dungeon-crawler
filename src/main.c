@@ -49,8 +49,6 @@ int main() {
     // Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, events, itemsHead);
     // Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
-    Player* player = Player_construct("Player", 0, 100, 0, NULL); // We need this store player inventory
-
     // if (room != NULL){
     //     // room->south = room1;
     //     rooms[room->ID] = room;
@@ -66,7 +64,7 @@ int main() {
 
     generateLayout(&rooms, &roomCount, 10000, &allocRoomSize);
 
-    // expandRoom(&rooms, room, &roomCount, 20, &allocRoomSize);
+    // expandRoom(&rooms, room, &roomCount, 10, &allocRoomSize);
     // loadLayout(layoutStateFPath, &rooms, &roomCount, &allocRoomSize);
     // displayRooms(rooms, roomCount);
     saveLayout(layoutStateFPath, rooms, roomCount);
@@ -76,11 +74,23 @@ int main() {
    
     // displayRooms(rooms, roomCount);
     
+    // int* playerPath = malloc(sizeof(int)*roomCount);
+    // int* playerPathCount = 0;
+    Player* player = Player_construct("Player", 0, 100, 0, NULL); // We need this store player inventory
+
     exploreDungeon(rooms[0], player, true);
 
     // saveLayout(layoutStateFPath, rooms, roomCount);
     // savePlayerState(playerStateFPath, player);
-    
+
+    // int arr[1000];
+    // int numberOccurenceProbArr[] = {45, 40, 10, 5};
+    // generateRandomIntArrProb(arr, 1000, 0, 3, numberOccurenceProbArr, 4);
+
+    // for (int i=0; i<1000; i++){
+    //     printf("\n%d", generateRandomInt(0, 3));
+    // }
+
     freeRooms(&rooms, &roomCount);
     // freeItemList(&itemsHead);
 

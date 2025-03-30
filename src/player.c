@@ -54,6 +54,7 @@ void pickUpItem(Player* player, int pickupItemID){
 
     // Add item to player inventory
     ItemList_insert(&player->inventory, pickupTargetItem);
+    printf("\nYou picked up an Item. Press i to see your inventory\n");
 }
 
 void dropItem(Player* player, int dropItemID){
@@ -72,6 +73,7 @@ void dropItem(Player* player, int dropItemID){
 
     // Add item to room
     ItemList_insert(&player->currentRoomPtr->items, dropTargetItem);
+    printf("\nYou dropped an Item. Press i to see your inventory\n");
 }
 
 void decreasePlayerHealth(Player* player, int damage){
@@ -91,3 +93,40 @@ void freePlayer(Player* player){
     free(player);
 }
 
+void triggerEvent(Room* room, Player* player){
+    EventNode* currEvent = room->events;
+    while (currEvent != NULL){
+        switch(currEvent->data){
+            case NORMAL:
+                printf("\nThis room is a normal room");
+                // delete event
+                EventList_delete(&room->events, currEvent->data);
+                break;
+            case BLOCKED:
+                printf("\nThis room is blocked");
+                int input;
+                scanf(" %d", &input);
+                break;
+            case LOCKED:
+                printf("\nThis room is locked, you need a key to open it");
+                break;
+            case TRAP:
+                printf("\nYou just got caught in a bobby trap! Youre health decreased by 25%%");
+                decreasePlayerHealth(player, 25);
+                break;
+            case PIT_TRAP:
+                printf("\nYou just fell into a pit");
+                break;
+            case PUZZLE:
+                printf("\nYou have to solve this puzzel to coninue to this room");
+                break;
+            case NPC_BOSS:
+                printf("\nYou just met an NpC boss");
+                printf("\nFighting...");
+                printf("\nYou Lost 50%% health");
+                break;
+        }
+
+        currEvent = currEvent->next;
+    }
+}

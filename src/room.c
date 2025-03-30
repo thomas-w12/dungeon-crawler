@@ -50,20 +50,35 @@ Room* Room_construct(int ID, char* name, char* description, Room* north, Room* s
     return room;
 }
 
-Room* constructRandomRoom(int roomCount){
+Room* constructRandomRoom(int roomCount, int noItems, int noEvents){
     // for every randomly generated room, randomly pick a number from 0 to max items in room, 
     // whatever no 'n' is picked, randomly get n numbers from 0 to maxitemscount that represents the item index;
     // if there are 3 or more items in a room, add a LOCKED event to the room;
 
     ItemNode* items = NULL;
+    int* itemsArr = malloc(noItems*sizeof(int));
+    // Can also use the probability generation here
+    generateRandomIntArr(itemsArr, noItems, 0, TOTAL_ITEMS_COUNT-1, 0);  // -1 becuse index starts from 0
+    for (int i=0; i<noItems; i++){
+        int itemID = itemsArr[i];
+        ItemList_insert(&items, Item_construct(itemID));
+    }
+
     EventNode* events = NULL;
+    int* eventsArr = malloc(noEvents*sizeof(int));
+    generateRandomIntArr(eventsArr, noEvents, 0, TOTAL_ITEMS_COUNT-1, 0);  // -1 becuse index starts from 0
+    for (int i=0; i<noEvents; i++){
+        int eventNum = eventsArr[i];
+        EventList_insert(&events, i);
+    }
+    
     Room* room = Room_construct(roomCount, "Test", "Test room", NULL, NULL, NULL, NULL, events, items);
 
     return room;
 }
 
 void generateLayout(Room*** roomsPtr, int* roomCount, int noRoomsToAdd, int* allocRoomsSize){
-    Room* firstRoom = constructRandomRoom(*roomCount);
+    Room* firstRoom = constructRandomRoom(*roomCount, 0, 0);
     if (firstRoom == NULL){
         perror("Could not create room");
         return;
@@ -94,8 +109,17 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
 
     Queue roomQueue; //maybe change to roomLevelQueue;
     Queue_init(&roomQueue);
-
     enqueue(&roomQueue, firstRoom->ID);
+
+     // Array that stores a random number of items for all rooms to add
+    int* roomsItemsCountArr = malloc(sizeof(int)*noRoomsToAdd);
+    int itemsOccurenceProbArr[] = {40, 30, 20, 10}; // {0: 40%, 1: 30%, 2: 20%, 3: 10%}
+    generateRandomIntArrProb(roomsItemsCountArr, noRoomsToAdd, 0, MAX_ITEMS_IN_ROOM, itemsOccurenceProbArr, (MAX_ITEMS_IN_ROOM+1));
+
+     // Array that stores a random number of events for all rooms to add
+    int* roomsEventsCountArr = malloc(sizeof(int)*noRoomsToAdd);
+    int eventsOccurenceProbArr[] = {45, 40, 10, 5}; // {0: 45%, 1: 40%, 2: 10%, 3: 5%}
+    generateRandomIntArrProb(roomsEventsCountArr, noRoomsToAdd, 0, MAX_ROOM_EVENTS, eventsOccurenceProbArr, (MAX_ROOM_EVENTS+1));
 
     // Iteratively expand using Breath First Search approach;
     int addedRoomsCount = 0;
@@ -127,13 +151,7 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
             directions[filledCount] = EastIndex;
             filledCount ++;
         }
-
-        generateRandomIntArr(directions, 0, MAX_DIRECTIONS-1, noOfConnections, filledCount);
-
-        // printf("\nRoom ID: %d, Connections: %d, Filled: %d", room->ID, noOfConnections, filledCount);
-        // for (int i=0;i<MAX_DIRECTIONS;i++){
-        //     printf("\ndirections[%d]: %d", i, directions[i]);
-        // }
+        generateRandomIntArr(directions, MAX_DIRECTIONS, 0, MAX_DIRECTIONS-1, filledCount);
 
         // Basically a new room has at most filledCount(probably 1) connections already
         for (int i=filledCount; i<noOfConnections; i++){
@@ -141,7 +159,9 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
             if (addedRoomsCount >= noRoomsToAdd) break;
 
             int direction = directions[i];
-            Room* newRoom = constructRandomRoom(*roomCount);
+            int noOfItems = roomsItemsCountArr[addedRoomsCount];
+            int noOfEvents = roomsEventsCountArr[addedRoomsCount];
+            Room* newRoom = constructRandomRoom(*roomCount, noOfItems, noOfEvents);
             
             if (newRoom == NULL){
                 perror("Could not create room");
@@ -177,6 +197,8 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
         // printQueue(&roomQueue);
     }
     clearQueue(&roomQueue);
+    free(roomsItemsCountArr);
+    free(roomsEventsCountArr);
 }
 
 void displayRoom(Room* room){

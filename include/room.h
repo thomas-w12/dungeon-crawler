@@ -14,6 +14,8 @@
 #define MAX_ITEMS_IN_ROOM 3
 #define MAX_ROOM_EVENTS 3
 #define MAX_DIRECTIONS 4
+#define PROB_ITEM_IN_ROOM 0.2 // Probability of having an item in a room
+#define PROB_EVENT_IN_ROOM 0.1 // Probability of having an event in a room
 
 typedef enum DirectionsIndex{
     NorthIndex,

@@ -1,6 +1,7 @@
 #include "../include/dungeon.h"
 
-void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom) {
+void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom){ // Maybe use displayRoom
+    triggerEvent(currentRoom, player);
     // Update player's current room
     updatePlayerRoom(player, currentRoom);
     if (isNewRoom == true){
@@ -15,7 +16,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom) {
     char choice;
     scanf(" %c", &choice);
     choice = (char) toupper((int) choice);
-    printf("\nChoice: %c", choice);
+    // printf("\nChoice: %c", choice);
 
     switch (choice) {
         case INVENTORY:
@@ -34,7 +35,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom) {
             printf("\nEnter the item ID to pick up:\n");
             int pickupItemID = parse_item_command();
             pickUpItem(player, pickupItemID);
-            exploreDungeon(currentRoom, player, false);
+            exploreDungeon(currentRoom, player, false); // would like to redisplay room
             break;
         case USE:
             printf("\nNot implemented yet");

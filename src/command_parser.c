@@ -71,7 +71,7 @@ int parse_item_command() {
     // }
     int input;
     scanf(" %d", &input);
-    printf("Item Input: %d", input);
+    // printf("Item Input: %d", input);
     return input;
     // return strtol(input, NULL, 10);
 }
