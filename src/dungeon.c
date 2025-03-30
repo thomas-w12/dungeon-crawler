@@ -27,7 +27,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom) {
         case PICKUP:
             // if there is an item in the room
             if (itemListCount(currentRoom->items) == 0){
-                printf("\nThere are no items to pick up:\n");
+                printf("\nThere are no items to pick up.\n");
                 exploreDungeon(currentRoom, player, false);
                 break;
             }
@@ -42,7 +42,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom) {
             break;
         case DROP:
             if (itemListCount(player->inventory) == 0){
-                printf("\nThere are no items in your inventory:\n");
+                printf("\nThere are no items in your inventory.\n");
                 exploreDungeon(currentRoom, player, false);
                 break;
             }
