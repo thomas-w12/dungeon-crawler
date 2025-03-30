@@ -130,13 +130,14 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
 
         generateRandomIntArr(directions, 0, MAX_DIRECTIONS-1, noOfConnections, filledCount);
 
-        printf("\nRoom ID: %d, Connections: %d, Filled: %d", room->ID, noOfConnections, filledCount);
-        for (int i=0;i<MAX_DIRECTIONS;i++){
-            printf("\ndirections[%d]: %d", i, directions[i]);
-        }
+        // printf("\nRoom ID: %d, Connections: %d, Filled: %d", room->ID, noOfConnections, filledCount);
+        // for (int i=0;i<MAX_DIRECTIONS;i++){
+        //     printf("\ndirections[%d]: %d", i, directions[i]);
+        // }
 
         // Basically a new room has at most filledCount(probably 1) connections already
-        for (int i=filledCount; i<(noOfConnections-filledCount); i++){
+        for (int i=filledCount; i<noOfConnections; i++){
+            if (i > MAX_DIRECTIONS) break;
             if (addedRoomsCount >= noRoomsToAdd) break;
 
             int direction = directions[i];
@@ -173,7 +174,7 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
             addedRoomsCount ++;
         }
         dequeue(&roomQueue);
-        printQueue(&roomQueue);
+        // printQueue(&roomQueue);
     }
     clearQueue(&roomQueue);
 }

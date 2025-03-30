@@ -64,12 +64,12 @@ int main() {
     //     // displayRoom(room1);
     // }
 
-    // generateLayout(&rooms, &roomCount, 20, &allocRoomSize);
+    generateLayout(&rooms, &roomCount, 10000, &allocRoomSize);
 
     // expandRoom(&rooms, room, &roomCount, 20, &allocRoomSize);
-    loadLayout(layoutStateFPath, &rooms, &roomCount, &allocRoomSize);
+    // loadLayout(layoutStateFPath, &rooms, &roomCount, &allocRoomSize);
     // displayRooms(rooms, roomCount);
-    // saveLayout(layoutStateFPath, rooms, roomCount);
+    saveLayout(layoutStateFPath, rooms, roomCount);
 
     // savePlayerState(playerStateFPath, player);
     // loadPlayerState(playerStateFPath, player);
