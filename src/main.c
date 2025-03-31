@@ -92,6 +92,7 @@ int main() {
     // }
 
     freeRooms(&rooms, &roomCount);
+    freePlayer(player);
     // freeItemList(&itemsHead);
 
     return EXIT_SUCCESS;
