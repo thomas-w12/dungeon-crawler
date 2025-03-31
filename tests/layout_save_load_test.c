@@ -41,14 +41,14 @@ int main(int argc, char *argv[]) {
 
 
     // Create a room and add it to the rooms array
-    Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, events, itemsHead);
+    Room* room = Room_construct(0, NULL, NULL, NULL, NULL, events, itemsHead);
     if (room != NULL){
         rooms[room->ID] = room;
         roomCount++;
     }
     displayRoom(room);
     // Create another room and add it to the rooms array
-    Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, NULL);
+    Room* room1 = Room_construct(1, NULL, NULL, NULL, NULL, NULL, NULL);
     if (room1 != NULL){
         room1->north = room;
         room->south = room1;
@@ -90,8 +90,6 @@ int main(int argc, char *argv[]) {
 
     // compare room 0
     if (loadedRooms[0]->ID != rooms[0]->ID ||
-        strcmp(loadedRooms[0]->name, rooms[0]->name) != 0 ||
-        strcmp(loadedRooms[0]->description, rooms[0]->description) != 0 ||
         loadedRooms[0]->north != NULL ||
         loadedRooms[0]->south == NULL ||
         loadedRooms[0]->west != NULL ||
@@ -101,8 +99,6 @@ int main(int argc, char *argv[]) {
     }
     // compare room 1
     if (loadedRooms[1]->ID != rooms[1]->ID ||
-        strcmp(loadedRooms[1]->name, rooms[1]->name) != 0 ||
-        strcmp(loadedRooms[1]->description, rooms[1]->description) != 0 ||
         loadedRooms[1]->north == NULL ||
         loadedRooms[1]->south != NULL ||
         loadedRooms[1]->west != NULL ||
