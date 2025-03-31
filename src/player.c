@@ -201,6 +201,7 @@ bool triggerPitTrapEvent(Player* player){
 bool triggerPuzzleEvent(Room* room, Player* player, int puzzleIndex){
     char userAnswerBuff[100];
     scanf(" %99[^\n]", userAnswerBuff);
+    clearBuffer();
     
     if (toupper((int)userAnswerBuff[0]) == (int) DECLINE){
         return false;

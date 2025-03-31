@@ -3,15 +3,15 @@
 
 #include <stdio.h>
 
-#define PUZZLE_QUESTIONS (const char*[]) {"What is 1+1"}
-#define PUZZLE_ANSWERS (const char*[]) {"2"}
-#define PUZZLE_COUNT 1
+#define PUZZLE_QUESTIONS (const char*[]) {"I have hands but cannot clap. What am I?", "What comes once in a minute, twice in a moment, but never in a thousand years?", "I have a tail and a head, but no body. What am I?", "Which planet is known as the Red Planet?", "What has keys but can't open locks?", "What number comes next in the sequence? 2, 4, 8, 16, __?", "What is the square root of 144?", "What metal is primarily used to make wires?", "What does malloc return if memory allocation was unsuccessfull?"}
+#define PUZZLE_ANSWERS (const char*[]) {"clock", "m", "coin", "mars", "keyboard", "32", "12", "copper", "null"}
+#define PUZZLE_COUNT 9
 
 // Update this count every time a new event is added to the Events
-#define TOTAL_EVENTS_COUNT 10 // update this count every time a new event is added to the Events
+#define TOTAL_EVENTS_COUNT 10
 typedef enum Event{
     NORMAL,
-    BLOCKED, //Not sure about this (you should not be able to enter a blocked room unless you have a pickaxe?)
+    BLOCKED, // You need a pickaxe to break and enter
     LOCKED, // Need a key to open it 
     FIRE_TRAP, // -25 health
     POISON_TRAP, // -15 health

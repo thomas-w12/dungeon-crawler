@@ -28,7 +28,6 @@ void Room_destroy(Room* room){
 }
 
 Room* Room_construct(int ID, Room* north, Room* south, Room* west, Room* east, EventNode* events, ItemNode* items){
-    // Thinking of adding Room** rooms and int* roomCount to the signature so anytime a room is constructed, addition to rooms and increasing room count would be done in one function; (or maybe it should be done in addRoom())
     Room* room = malloc(sizeof(Room));
     if (room == NULL){
         printf("Could not create room\n");
@@ -48,14 +47,12 @@ Room* Room_construct(int ID, Room* north, Room* south, Room* west, Room* east, E
 }
 
 Room* constructRandomRoom(int roomCount, int noItems, int noEvents){
-    // for every randomly generated room, randomly pick a number from 0 to max items in room, 
-    // whatever no 'n' is picked, randomly get n numbers from 0 to maxitemscount that represents the item index;
     // if there are 3 or more items in a room, add a LOCKED event to the room;
 
     ItemNode* items = NULL;
     int* itemsArr = malloc(noItems*sizeof(int));
     // Can also use the probability generation here
-    generateRandomIntArr(itemsArr, noItems, 0, TOTAL_ITEMS_COUNT-1, 0);  // -1 becuse index starts from 0
+    generateRandomIntArr(itemsArr, noItems, 0, TOTAL_ITEMS_COUNT-1, 0);
     for (int i=0; i<noItems; i++){
         int itemID = itemsArr[i];
         ItemList_insert(&items, Item_construct(itemID));
@@ -63,7 +60,7 @@ Room* constructRandomRoom(int roomCount, int noItems, int noEvents){
 
     EventNode* events = NULL;
     int* eventsArr = malloc(noEvents*sizeof(int));
-    generateRandomIntArr(eventsArr, noEvents, 0, TOTAL_ITEMS_COUNT-1, 0);  // -1 becuse index starts from 0
+    generateRandomIntArr(eventsArr, noEvents, 0, TOTAL_ITEMS_COUNT-1, 0);
     for (int i=0; i<noEvents; i++){
         int eventNum = eventsArr[i];
         EventList_insert(&events, eventNum);
@@ -97,7 +94,6 @@ void reallocRooms(Room*** roomsPtr, int* allocRoomsSize, int expectedSize){
         }
         *roomsPtr = newPtr;
         (*allocRoomsSize) = (expectedSize+20);
-        // printf("\nReallocating: %d %d\n", *allocRoomsSize, expectedSize);
     }
 }
 
@@ -199,7 +195,6 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
             addedRoomsCount ++;
         }
         dequeue(&roomQueue);
-        // printQueue(&roomQueue);
     }
     clearQueue(&roomQueue);
     free(roomsItemsCountArr);

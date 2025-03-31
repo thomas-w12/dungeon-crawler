@@ -18,13 +18,13 @@ typedef enum Commands{
     INVENTORY = 'I',
     ACCEPT = 'A',
     DECLINE = 'X',
-    LOAD = 'L',
-    SAVE = 'T',
-    ROOM = 'R', //Display room details
-    PLAYER_STATS = 'M'
+    LOAD_GAME = 'L',
+    NEW_GAME = 'T',
+    ROOM = 'R', // Display room details
+    PLAYER_STATS = 'M' // Display player stats
 } Commands;
 
-int parse_room_command();
+void clearBuffer();
 char getUserInputCommand();
 int parse_item_command();
 

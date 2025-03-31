@@ -1,4 +1,4 @@
-#include <stdbool.h> // not sure if i should add this since it has already been included in dungeon.h
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -17,77 +17,86 @@
 // Should we show user available connections? N, S, W
 // Should we give the user option to expand room?
 
-void loadGame(Room*** roomsPtr, int* roomCount, int noOfRooms, int* allocRoomSize, Player* player){
-    char layoutStateFPath[] = {"saved_games/layoutState.txt"};
-    char playerStateFPath[] = {"saved_games/playerState.txt"};
+bool loadGame(char* layoutStateFPath, char* playerStateFPath, Room*** roomsPtr, int* roomCount, int* allocRoomSize, Player** playerPtr){ // Need to check if there is a saved file and also if the saved file is empty or valid
+    *playerPtr = Player_construct("Player", 0, 100, 0, NULL); 
+    loadLayout(layoutStateFPath, roomsPtr, roomCount, allocRoomSize);
+    loadPlayerState(playerStateFPath, *playerPtr);
+
+    return true;
+}
+
+bool newGame(Room*** roomsPtr, int* roomCount, int noOfRooms, int* allocRoomSize, Player** playerPtr){
+    char playerNameBuff[100];
+    printf("Enter player name: ");
+    scanf(" %99[^\n]", playerNameBuff);
+    clearBuffer();
 
     generateLayout(roomsPtr, roomCount, noOfRooms, allocRoomSize);
+    *playerPtr = Player_construct(playerNameBuff, 0, 100, 0, NULL); 
+
+    return true;
 }
 
 void displayMainMenu(){
-    printf("Main Menu Screen\nPress:\nL - load saved game\nT - Start a new game");
-    char choice = getUserInputCommand();
-
-    switch(choice){
-        case LOAD:
-            break;
-        case SAVE:
-            break;
-        default:
-            printf("Invalid command");
-            displayMainMenu();
-            break;
-    }
+    printf("\nMain Menu Screen\nPress:\nL - Load saved game\nT - Start a new game\nQ - Quit the game\n");
 }
 
 int main() {
     srand(time(0));
 
+    char layoutStateFPath[] = {"saved_games/layoutState.txt"};
+    char playerStateFPath[] = {"saved_games/playerState.txt"};
+
     int allocRoomSize = 10; // initial rooms alloc size
     int roomCount = 0;
     Room** rooms = malloc(sizeof(Room*) * allocRoomSize);
     if (rooms == NULL){
-        perror("Could not allocate memory for rooms");
+        perror("Could not allocate memory for rooms\n");
         return EXIT_FAILURE;
     }
     
-    char layoutStateFPath[] = {"saved_games/layoutState.txt"};
-    char playerStateFPath[] = {"saved_games/playerState.txt"};
-    
-    generateLayout(&rooms, &roomCount, 20, &allocRoomSize);
-
-    // expandRoom(&rooms, room, &roomCount, 10, &allocRoomSize);
-    // loadLayout(layoutStateFPath, &rooms, &roomCount, &allocRoomSize);
-    // displayRooms(rooms, roomCount);
-    // saveLayout(layoutStateFPath, rooms, roomCount);
-
-    // savePlayerState(playerStateFPath, player);
-    // loadPlayerState(playerStateFPath, player);
-   
-    // displayRooms(rooms, roomCount);
-    
     int* playerPath = malloc(sizeof(int)*roomCount);
+    if (playerPath == NULL){
+        perror("Could not allocate memory for player path\n");
+        return EXIT_FAILURE;
+    }
     int allocPathSize = 0;
     int playerPathCount = 0;
-    Player* player = Player_construct("Player", 0, 100, 0, NULL); // We need this store player inventory
 
-    exploreDungeon(NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
+    // expandRoom(&rooms, room, &roomCount, 10, &allocRoomSize);
+
+    Player* player;
+    while (true){
+        displayMainMenu();
+        char choice = getUserInputCommand();
+        switch(choice){
+            case LOAD_GAME:
+                printf("Loading saved game...\n");
+                loadGame(layoutStateFPath, playerStateFPath, &rooms, &roomCount, &allocRoomSize, &player);
+
+                Room* prevRoom = NULL;
+                exploreDungeon(NULL, rooms[player->currentRoom], player, &playerPath, &allocPathSize, &playerPathCount);
+                break;
+            case NEW_GAME:
+                printf("Generating a new game...\n");
+                newGame(&rooms, &roomCount, 20, &allocRoomSize, &player);
+                exploreDungeon(NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
+                break;
+            case EXIT:
+                printf("Quiting game...\n");
+                return EXIT_SUCCESS;
+            default:
+                printf("Invalid command\n");
+                displayMainMenu();
+                break;
+        }
+    }
 
     // saveLayout(layoutStateFPath, rooms, roomCount);
-    // savePlayerState(playerStateFPath, player);
-
-    // int arr[1000];
-    // int numberOccurenceProbArr[] = {45, 40, 10, 5};
-    // generateRandomIntArrProb(arr, 1000, 0, 3, numberOccurenceProbArr, 4);
-
-    // for (int i=0; i<1000; i++){
-    //     printf("\n%d", generateRandomInt(0, 3));
-    // }
-
+    savePlayerState(playerStateFPath, player);
     free(playerPath);
     freeRooms(&rooms, &roomCount);
     freePlayer(player);
-    // freeItemList(&itemsHead);
 
     return EXIT_SUCCESS;
 }

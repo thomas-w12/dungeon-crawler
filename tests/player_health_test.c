@@ -24,7 +24,7 @@ int main() {
     
     
     EventNode* events = NULL;
-    EventList_insert(&events, TRAP);
+    EventList_insert(&events, FIRE_TRAP);
     
     Room* room = Room_construct(0, NULL, NULL, NULL, NULL, events, NULL);
     Room* room1 = Room_construct(1, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -43,9 +43,12 @@ int main() {
     }
 
 
+    int* playerPath = malloc(sizeof(int)*roomCount);
+    int allocPathSize = 0;
+    int playerPathCount = 0;
     Player* player = Player_construct("Player", 0, 100, 0, NULL); // We need this store player inventory
 
-    exploreDungeon(rooms[0], player, true);
+    exploreDungeon(NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
 
     
 

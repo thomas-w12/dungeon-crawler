@@ -9,13 +9,10 @@
 #include "event.h"
 #include "queue.h"
 
-#define MAX_ROOMS 10
 #define MAX_ROOM_LINE_LEN 100 // Max length of the room line stored in the layout.txt
 #define MAX_ITEMS_IN_ROOM 3
 #define MAX_ROOM_EVENTS 3
 #define MAX_DIRECTIONS 4
-#define PROB_ITEM_IN_ROOM 0.2 // Probability of having an item in a room
-#define PROB_EVENT_IN_ROOM 0.1 // Probability of having an event in a room
 #define EXPAND_ROOM_COUNT 20
 
 typedef enum DirectionsIndex{
@@ -31,7 +28,7 @@ typedef struct Room{
     struct Room *south;
     struct Room *east;
     struct Room *west;
-    EventNode* events; //points to the first event which holds the rest of list
+    EventNode* events;
     ItemNode* items;
 } Room;
 
