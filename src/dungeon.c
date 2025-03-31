@@ -9,6 +9,12 @@ void displayMenuScreen(Room* currentRoom){
 
 void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom){ // Maybe use displayRoom
     triggerEvent(currentRoom, player);
+
+    if (player->health <= 0){
+        printf("\nYou are dead. Game over.\n");
+        return;
+    }
+
     // Update player's current room
     updatePlayerRoom(player, currentRoom);
     if (isNewRoom == true){
