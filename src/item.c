@@ -20,7 +20,7 @@ Item* Item_construct(int itemID) {
 ItemNode* ItemNode_construct(Item* item){
     ItemNode* itemNode = malloc(sizeof(ItemNode));
     if (itemNode == NULL){
-        perror("Could not allocate memory for ItemNode");
+        perror("Could not allocate memory for ItemNode\n");
         return NULL;
     }
 
@@ -33,7 +33,7 @@ ItemNode* ItemNode_construct(Item* item){
 ItemNode* ItemList_insert(ItemNode** head, Item* item){
     ItemNode* itemNode = ItemNode_construct(item);
     if (itemNode == NULL){
-        perror("Failed Item List insert");
+        perror("Failed Item List insert\n");
         return NULL;
     }
     // cannot have duplicate events
@@ -44,7 +44,7 @@ ItemNode* ItemList_insert(ItemNode** head, Item* item){
 
         while(curr->next != NULL){
             if (curr->data->ID == item->ID){
-                perror("Duplicate items are not allowed");
+                perror("Duplicate items are not allowed\n");
                 return NULL;
             }
             curr = curr->next;
@@ -162,7 +162,7 @@ void displayItem(Item* item){
 
 void displayItems(Item* items[], int itemCount, int maxItems){
     if (itemCount == 0){
-        printf("There are no items!\n");
+        // printf("There are no items!\n");
         return;
     }
 
@@ -173,7 +173,7 @@ void displayItems(Item* items[], int itemCount, int maxItems){
 
 void printItemList(ItemNode* head){
     if (head == NULL){
-        printf("There are no items!\n");
+        // printf("There are no items!\n");
         return;
     }
     ItemNode* curr = head;

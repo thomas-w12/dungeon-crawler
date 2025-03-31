@@ -12,7 +12,7 @@ typedef enum ItemsID{
     LADDER,
     POTION,
     KEY,
-    PICKAE,
+    PICKAXE,
 } ItemsID;
 
 

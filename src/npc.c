@@ -84,7 +84,7 @@ void npcTalk(NPC* npc, Player* player){
 }
 
 bool validateItemTradeIn(Player* player, char message[]){
-    printf("%s\n", message);
+    printf("%s", message);
 
     int item = parse_item_command();
 
@@ -104,7 +104,7 @@ bool validateItemTradeIn(Player* player, char message[]){
 }
 
 bool validateItemTradeOut(Player* player, char message[]){
-    printf("%s\n", message);
+    printf("%s", message);
 
     int item = parse_item_command();
 
@@ -135,12 +135,12 @@ void npcTrade(NPC* npc, Player* player){
                 if (itemListCount(player->inventory) < 2){
                     printf("You do not have enough items to trade!\n");
                 }else{
-                    if (! validateItemTradeIn(player, "Enter the id of the first item to trade\n")){
+                    if (! validateItemTradeIn(player, "Enter the id of the first item to trade: ")){
                         correctCommand = true;
                         break;
                     }
 
-                    if (! validateItemTradeIn(player, "Enter the id of the second item to trade\n")){
+                    if (! validateItemTradeIn(player, "Enter the id of the second item to trade: ")){
                         correctCommand = true;
                         break;
                     }

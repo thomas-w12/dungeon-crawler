@@ -12,10 +12,32 @@
 
 // Give user feedback to let them know they cant pick duplicate items
 // When player health is 0, display you died amd show main menu (Not sure if we should save state)
+// Player can pick up duplicates but won't be validated (removed from room but not added to player inventory)
+// Bug after falling in pit
+// Should we show user available connections? N, S, W
+// Should we give the user option to expand room?
 
+void loadGame(Room*** roomsPtr, int* roomCount, int noOfRooms, int* allocRoomSize, Player* player){
+    char layoutStateFPath[] = {"saved_games/layoutState.txt"};
+    char playerStateFPath[] = {"saved_games/playerState.txt"};
+
+    generateLayout(roomsPtr, roomCount, noOfRooms, allocRoomSize);
+}
 
 void displayMainMenu(){
-    printf("Main Menu Screen\nPress:\nL - load saved game\nN - Start a new game");
+    printf("Main Menu Screen\nPress:\nL - load saved game\nT - Start a new game");
+    char choice = getUserInputCommand();
+
+    switch(choice){
+        case LOAD:
+            break;
+        case SAVE:
+            break;
+        default:
+            printf("Invalid command");
+            displayMainMenu();
+            break;
+    }
 }
 
 int main() {
@@ -32,10 +54,10 @@ int main() {
     char layoutStateFPath[] = {"saved_games/layoutState.txt"};
     char playerStateFPath[] = {"saved_games/playerState.txt"};
     
-    // generateLayout(&rooms, &roomCount, 10000, &allocRoomSize);
+    generateLayout(&rooms, &roomCount, 20, &allocRoomSize);
 
     // expandRoom(&rooms, room, &roomCount, 10, &allocRoomSize);
-    loadLayout(layoutStateFPath, &rooms, &roomCount, &allocRoomSize);
+    // loadLayout(layoutStateFPath, &rooms, &roomCount, &allocRoomSize);
     // displayRooms(rooms, roomCount);
     // saveLayout(layoutStateFPath, rooms, roomCount);
 
@@ -45,10 +67,11 @@ int main() {
     // displayRooms(rooms, roomCount);
     
     int* playerPath = malloc(sizeof(int)*roomCount);
-    int* playerPathCount = 0;
+    int allocPathSize = 0;
+    int playerPathCount = 0;
     Player* player = Player_construct("Player", 0, 100, 0, NULL); // We need this store player inventory
 
-    exploreDungeon(rooms[0], player, true);
+    exploreDungeon(NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
 
     // saveLayout(layoutStateFPath, rooms, roomCount);
     // savePlayerState(playerStateFPath, player);
@@ -61,6 +84,7 @@ int main() {
     //     printf("\n%d", generateRandomInt(0, 3));
     // }
 
+    free(playerPath);
     freeRooms(&rooms, &roomCount);
     freePlayer(player);
     // freeItemList(&itemsHead);

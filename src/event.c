@@ -8,7 +8,7 @@
 EventNode* EventNode_construct(Event event){
     EventNode* eventNode = malloc(sizeof(EventNode));
     if (eventNode == NULL){
-        perror("Could not allocate memory for eventnode");
+        perror("Could not allocate memory for eventnode\n");
         return NULL;
     }
 
@@ -21,7 +21,7 @@ EventNode* EventNode_construct(Event event){
 EventNode* EventList_insert(EventNode** head, Event event){
     EventNode* eventNode = EventNode_construct(event);
     if (eventNode == NULL){
-        perror("Failed Event List insert");
+        perror("Failed Event List insert\n");
         return NULL;
     }
     // cannot have duplicate events
@@ -32,7 +32,7 @@ EventNode* EventList_insert(EventNode** head, Event event){
 
         while(curr->next != NULL){
             if (curr->data == event){
-                perror("Duplicate events are not allowed");
+                perror("Duplicate events are not allowed\n");
                 return NULL;
             }
             curr = curr->next;
@@ -49,8 +49,8 @@ void EventList_delete(EventNode** head, Event event){
         return;
     }else if ((*head)->data == event){
         if ((*head)->next == NULL){
-            free(head);
-            head = NULL;
+            free(*head);
+            *head = NULL;
             return;
         }
         EventNode* temp = (*head)->next;
@@ -108,10 +108,10 @@ void freeEventList(EventNode** head){
 }
 
 void printEventList(EventNode* head){
-    printf("\n");
     EventNode* curr = head;
     while (curr != NULL){
         printf("%d->", curr->data);
         curr = curr->next;
     }
+    printf("\n");
 }

@@ -14,7 +14,6 @@ typedef struct Player {
     int health; // Health bar
     int score;
     ItemNode* inventory; // List of items the player has
-    // int itemsCount;
 } Player;
 
 Player* Player_construct(char* name, int currentRoom, int health, int score, Room* currentRoomPtr);
@@ -23,11 +22,12 @@ void displayPlayerInventory(Player* player);
 void updatePlayerRoom(Player* player, Room* currentRoom);
 void pickUpItem(Player* player, int pickupItemID);
 void dropItem(Player* player, int dropItemID);
-void useItem(Player* player, int itemID);
+bool useItem(Player* player, int itemID);
 void decreasePlayerHealth(Player* player, int damage);
 void increasePlayerHealth(Player* player, int health);
 void increasePlayerScore(Player* player, int score);
-void triggerEvent(Room* room, Player* player);
+bool triggerEvent(Room* room, Player* player, Event currEvent);
+bool triggerEvents(Room* room, Player* player);
 void freePlayer(Player* player);
 
 #endif

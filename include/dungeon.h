@@ -6,6 +6,6 @@
 #include "player.h"
 
 
-void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom);
+void exploreDungeon(Room* prevRoom, Room* currentRoom, Player* player, int** playerPathPtr, int* allocPathSize, int* playerPathCount);
 
 #endif

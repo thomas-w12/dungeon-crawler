@@ -19,7 +19,7 @@ int generateRandomInt(int start, int end){
 /// @return Pointer to the array of values
 int* generateRandomIntArr(int* arr,  int arrSize,int start, int end, int filledCount){
     if (((end-start+1) < arrSize)){ // +1 since start and end are inclusive
-        printf("\nCould not generate %d unique numbers between %d and %d", arrSize, start, end);
+        printf("Could not generate %d unique numbers between %d and %d\n", arrSize, start, end);
         return NULL;
     }
     int validCount = filledCount;
@@ -50,14 +50,14 @@ int* generateRandomIntArrProb(int* arr, int arrSize, int start, int end, int* nu
         probSum += numberOccurenceProbArr[i];
     }
     if (probSum < 100) {
-        printf("\nThe sum of the probability arr has to be at least 100%%");
+        printf("The sum of the probability arr has to be at least 100%%\n");
         return NULL;
      } // Because might cause an inifinite loop;
 
     int* numberOccurenceArr = calloc(numberOccurenceProbArrCount, sizeof(int));
 
     if (numberOccurenceArr == NULL){
-        perror("\nCould not allocate memory for numberOccurenceArr");
+        perror("Could not allocate memory for numberOccurenceArr\n");
         return NULL;
     }
 

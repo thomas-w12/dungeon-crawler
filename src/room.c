@@ -31,7 +31,7 @@ Room* Room_construct(int ID, Room* north, Room* south, Room* west, Room* east, E
     // Thinking of adding Room** rooms and int* roomCount to the signature so anytime a room is constructed, addition to rooms and increasing room count would be done in one function; (or maybe it should be done in addRoom())
     Room* room = malloc(sizeof(Room));
     if (room == NULL){
-        printf("\nCould not create room");
+        printf("Could not create room\n");
         return NULL;
     }
 
@@ -79,7 +79,7 @@ Room* constructRandomRoom(int roomCount, int noItems, int noEvents){
 void generateLayout(Room*** roomsPtr, int* roomCount, int noRoomsToAdd, int* allocRoomsSize){
     Room* firstRoom = constructRandomRoom(*roomCount, 0, 0);
     if (firstRoom == NULL){
-        perror("Could not create room");
+        perror("Could not create room\n");
         return;
     }
     *roomsPtr[firstRoom->ID] = firstRoom;
@@ -92,7 +92,7 @@ void reallocRooms(Room*** roomsPtr, int* allocRoomsSize, int expectedSize){
     if (expectedSize >= *allocRoomsSize){ 
         Room** newPtr = realloc(*roomsPtr, sizeof(Room*) * (expectedSize+20)); //reallocate memory (expected size)
         if (newPtr == NULL){
-            perror("Could not reallocate memory for rooms");
+            perror("Could not reallocate memory for rooms\n");
             return;
         }
         *roomsPtr = newPtr;
@@ -114,7 +114,7 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
     int* roomsItemsCountArr = malloc(sizeof(int)*noRoomsToAdd);
     int itemsOccurenceProbArr[] = {40, 30, 20, 10}; // {0: 40%, 1: 30%, 2: 20%, 3: 10%}
     if (generateRandomIntArrProb(roomsItemsCountArr, noRoomsToAdd, 0, MAX_ITEMS_IN_ROOM, itemsOccurenceProbArr, (MAX_ITEMS_IN_ROOM+1)) == NULL){
-        printf("There was an issue generating the random probability array.");
+        printf("There was an issue generating the random probability array.\n");
         return;
     }
 
@@ -122,7 +122,7 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
     int* roomsEventsCountArr = malloc(sizeof(int)*noRoomsToAdd);
     int eventsOccurenceProbArr[] = {45, 40, 10, 5}; // {0: 45%, 1: 40%, 2: 10%, 3: 5%}
     if (generateRandomIntArrProb(roomsEventsCountArr, noRoomsToAdd, 0, MAX_ROOM_EVENTS, eventsOccurenceProbArr, (MAX_ROOM_EVENTS+1)) == NULL){
-        printf("\nThere was an issue generating the random probability array.");
+        printf("There was an issue generating the random probability array.\n");
         return;
     }
 
@@ -169,7 +169,7 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
             Room* newRoom = constructRandomRoom(*roomCount, noOfItems, noOfEvents);
             
             if (newRoom == NULL){
-                perror("Could not create room");
+                perror("Could not create room\n");
                 return;
             }
             switch(direction){
@@ -208,21 +208,20 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
 
 void displayRoom(Room* room){
     if (room == NULL){
-        printf("\nRoom does not exist");
+        printf("Room does not exist\n");
         return;
     }
-    printf("\nRoom - ID: %d", room->ID);
-    printf("\nItems in room (%d): ", itemListCount(room->items));
+    printf("Room - ID: %d\n", room->ID);
+    printf("Items in room (%d): \n", itemListCount(room->items));
     printItemList(room->items);
-    printf("\nEvents in room (%d): ", eventListCount(room->events));
+    printf("Events in room (%d): \n", eventListCount(room->events));
     printEventList(room->events);
-    printf("\nRoom Connections: %d %d %d %d", room->north != NULL?room->north->ID:DNE, room->south != NULL?room->south->ID:DNE, room->west != NULL?room->west->ID:DNE, room->east != NULL?room->east->ID:DNE);
-    printf("\n");
+    printf("Room Connections: %d %d %d %d\n", room->north != NULL?room->north->ID:DNE, room->south != NULL?room->south->ID:DNE, room->west != NULL?room->west->ID:DNE, room->east != NULL?room->east->ID:DNE);
 }
 
 void displayRooms(Room** rooms, int roomCount){
     if (roomCount == 0){
-        printf("\nThere are no rooms!");
+        printf("There are no rooms!\n");
         return;
     }
 
@@ -234,7 +233,7 @@ void displayRooms(Room** rooms, int roomCount){
 void freeRooms(Room*** roomsPtr, int* roomCount){
     Room** rooms = *roomsPtr;
     if ((*roomCount == 0) && (rooms == NULL)){
-        printf("\nThere are no rooms to free!");
+        printf("There are no rooms to free!\n");
         return;
     }
     

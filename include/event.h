@@ -4,7 +4,8 @@
 #include <stdio.h>
 
 #define PUZZLE_QUESTIONS (const char*[]) {"What is 1+1"}
-#define PUZZEL_ANSWERS (const char*[]) {"2"}
+#define PUZZLE_ANSWERS (const char*[]) {"2"}
+#define PUZZLE_COUNT 1
 
 // Update this count every time a new event is added to the Events
 #define TOTAL_EVENTS_COUNT 10 // update this count every time a new event is added to the Events
