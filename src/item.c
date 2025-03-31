@@ -185,6 +185,9 @@ void printItemList(ItemNode* head){
 }
 
 void freeItem(Item* item){
+    if (item == NULL) {
+        return;
+    }
     free(item);
 }
 
