@@ -20,7 +20,7 @@ int main() {
     ItemList_insert(&itemsHead, item3);
 
     // create room
-    Room* startingRoom = Room_construct(0, "Starting Room", "This is the starting room.", NULL, NULL, NULL, NULL, NULL, itemsHead);
+    Room* startingRoom = Room_construct(0, NULL, NULL, NULL, NULL, NULL, itemsHead);
     if (startingRoom == NULL) {
         printf("Error creating starting room.\n");
         return EXIT_FAILURE;

@@ -13,6 +13,11 @@ void displayRoomMenuScreen(Room* currentRoom){
 
 
 void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom){ // Maybe use displayRoom
+    if (player->health <= 0){
+        printf("\nYou are dead. Game over.\n");
+        return;
+    }
+
     // Update player's current room
     updatePlayerRoom(player, currentRoom);
     if (isNewRoom == true){

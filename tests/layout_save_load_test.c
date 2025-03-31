@@ -41,14 +41,14 @@ int main(int argc, char *argv[]) {
 
 
     // Create a room and add it to the rooms array
-    Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, events, itemsHead);
+    Room* room = Room_construct(0, NULL, NULL, NULL, NULL, events, itemsHead);
     if (room != NULL){
         rooms[room->ID] = room;
         roomCount++;
     }
     displayRoom(room);
     // Create another room and add it to the rooms array
-    Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, NULL);
+    Room* room1 = Room_construct(1, NULL, NULL, NULL, NULL, NULL, NULL);
     if (room1 != NULL){
         room1->north = room;
         room->south = room1;

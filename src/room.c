@@ -5,6 +5,9 @@
 #include "../include/global.h"
 
 void Room_destroy(Room* room){
+    if (room == NULL){
+        return;
+    }
     // find all its connections and close the space between them [(or maybe set to null)]
     if (room->north != NULL){
         room->north->south = room->south;
