@@ -10,6 +10,13 @@
 #include "../include/event.h"
 #include "../include/global.h"
 
+// Give user feedback to let them know they cant pick duplicate items
+// When player health is 0, display you died amd show main menu (Not sure if we should save state)
+
+
+void displayMainMenu(){
+    printf("Main Menu Screen\nPress:\nL - load saved game\nN - Start a new game");
+}
 
 int main() {
     srand(time(0));
@@ -24,44 +31,7 @@ int main() {
     
     char layoutStateFPath[] = {"saved_games/layoutState.txt"};
     char playerStateFPath[] = {"saved_games/playerState.txt"};
-
-    // Item* item1 = Item_construct(0);
-    // Item* item2 = Item_construct(1);
-    // Item* item3 = Item_construct(2);
-    // Item* item4 = Item_construct(3);
-
-    // ItemNode* itemsHead = NULL;
-    // ItemList_insert(&itemsHead, item1);
-    // ItemList_insert(&itemsHead, item2);
-    // ItemList_insert(&itemsHead, item3);
-    // ItemList_insert(&itemsHead, item4);
     
-    // printItemList(itemsHead);
-    // ItemList_deleteAtIndex(&itemsHead, 3);
-    // printItemList(itemsHead);
-    
-    // EventNode* events = NULL;
-    // EventList_insert(&events, TRAP);
-    // EventList_insert(&events, PUZZLE);
-    // EventList_insert(&events, BLOCKED);
-    // printEventList(events);
-    
-    // Room* room = Room_construct(0, "Trap", "This is a trap room", NULL, NULL, NULL, NULL, events, itemsHead);
-    // Room* room1 = Room_construct(1, "Normal", "This is a normal room", NULL, NULL, NULL, NULL, NULL, NULL, 0);
-
-    // if (room != NULL){
-    //     // room->south = room1;
-    //     rooms[room->ID] = room;
-    //     roomCount ++;
-    //     // displayRoom(room);
-    // }
-    // if (room1 != NULL){
-    //     room1->north = room;
-    //     rooms[room1->ID] = room1;
-    //     roomCount ++;
-    //     // displayRoom(room1);
-    // }
-
     // generateLayout(&rooms, &roomCount, 10000, &allocRoomSize);
 
     // expandRoom(&rooms, room, &roomCount, 10, &allocRoomSize);
@@ -74,8 +44,8 @@ int main() {
    
     // displayRooms(rooms, roomCount);
     
-    // int* playerPath = malloc(sizeof(int)*roomCount);
-    // int* playerPathCount = 0;
+    int* playerPath = malloc(sizeof(int)*roomCount);
+    int* playerPathCount = 0;
     Player* player = Player_construct("Player", 0, 100, 0, NULL); // We need this store player inventory
 
     exploreDungeon(rooms[0], player, true);
@@ -92,7 +62,6 @@ int main() {
     // }
 
     freeRooms(&rooms, &roomCount);
-    // freeItemList(&itemsHead);
 
     return EXIT_SUCCESS;
 }

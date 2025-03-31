@@ -4,6 +4,7 @@
 #include "../include/room.h"
 #include "../include/item.h"
 #include "../include/player.h"
+#include "../include/npc.h"
 
 
 Player* Player_construct(char* name, int currentRoom, int health, int score, Room* currentRoomPtr){
@@ -81,12 +82,18 @@ void dropItem(Player* player, int dropItemID){
     printf("\nYou dropped an Item. Press i to see your inventory\n");
 }
 
+void useItem(Player* player, int itemID){
+
+}
+
 void decreasePlayerHealth(Player* player, int damage){
     player->health -= damage;
+    printf("Ouch you took %d %% damage!", damage);
 }
 
 void increasePlayerHealth(Player* player, int health){
     player->health += health;
+    printf("Your health increased by %d %%", health);
 }
 
 void increasePlayerScore(Player* player, int score){
@@ -103,39 +110,41 @@ void freePlayer(Player* player){
 }
 
 void triggerEvent(Room* room, Player* player){
-    EventNode* currEvent = room->events;
-    while (currEvent != NULL){
-        switch(currEvent->data){
+    EventNode* currEventNode = room->events;
+    while (currEventNode != NULL){
+        Event currEvent = currEventNode->data;
+        switch(currEvent){
             case NORMAL:
                 printf("\nThis room is a normal room");
                 // delete event
-                EventList_delete(&room->events, currEvent->data);
+                EventList_delete(&room->events, currEvent);
                 break;
             case BLOCKED:
-                printf("\nThis room is blocked");
+                printf("\nThis room is blocked, you need a pick axe to break through");
                 int input;
                 scanf(" %d", &input);
                 break;
             case LOCKED:
                 printf("\nThis room is locked, you need a key to open it");
                 break;
-            case TRAP:
-                printf("\nYou just got caught in a bobby trap! Youre health decreased by 25%%");
+            case FIRE_TRAP:
+                printf("\nYou just got caught in a fire trap! Youre health decreased by 25%%");
                 decreasePlayerHealth(player, 25);
                 break;
             case PIT_TRAP:
-                printf("\nYou just fell into a pit");
+                printf("\nYou just fell into a pit, you dont have a ladder so you died!");
                 break;
             case PUZZLE:
                 printf("\nYou have to solve this puzzel to coninue to this room");
                 break;
             case NPC_BOSS:
-                printf("\nYou just met an NpC boss");
-                printf("\nFighting...");
-                printf("\nYou Lost 50%% health");
+            case NPC_TRADE:
+            case NPC_TALK:
+                NPC npc = createNPC(currEvent);
+                npc.interact(&npc, player);
                 break;
         }
 
-        currEvent = currEvent->next;
+        currEventNode = currEventNode->next;
     }
 }

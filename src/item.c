@@ -5,15 +5,15 @@
 #include "../include/global.h"
 
 
-Item* Item_construct(int ID) {
+Item* Item_construct(int itemID) {
     Item* newItem = malloc(sizeof(Item));
     if (!newItem) {
         printf("Error: Could not allocate memory for Item.\n");
         return NULL;
     }
-    newItem->ID = ID;
-    strcpy(newItem->type, ITEM_TYPES[ID]);
-    strcpy(newItem->description, ITEM_DESCRIPTIONS[ID]);
+    newItem->ID = itemID;
+    strcpy(newItem->type, ITEM_TYPES[itemID]);
+    strcpy(newItem->description, ITEM_DESCRIPTIONS[itemID]);
     return newItem;
 }
 
@@ -154,15 +154,15 @@ void itemListToArr(ItemNode* head, Item* arr[], int arrSize){
 
 void displayItem(Item* item){
     if (item != NULL) {
-        printf("\nItem - ID: %d\tType: %s\tDescription: %s", item->ID, item->type, item->description);
+        printf("Item - ID: %d\tType: %s\tDescription: %s\n", item->ID, item->type, item->description);
     }else{
-        printf("Item is NULL");
+        printf("Item is NULL\n");
     }
 }
 
 void displayItems(Item* items[], int itemCount, int maxItems){
     if (itemCount == 0){
-        printf("There are no items!");
+        printf("There are no items!\n");
         return;
     }
 
@@ -173,7 +173,7 @@ void displayItems(Item* items[], int itemCount, int maxItems){
 
 void printItemList(ItemNode* head){
     if (head == NULL){
-        printf("There are no items!");
+        printf("There are no items!\n");
         return;
     }
     ItemNode* curr = head;

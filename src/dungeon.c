@@ -1,6 +1,11 @@
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../include/dungeon.h"
+#include "../include/command_parser.h"
 
-void displayMenuScreen(Room* currentRoom){
+void displayRoomMenuScreen(Room* currentRoom){
     displayRoom(currentRoom);
 
     printf("\nWhat would you like to do?\nP - pick up item\nU - use item\nD - drop item\nI - show inventory\nN - go north\nS - go south\nW - go west\nE - go east\nQ - quit\n");
@@ -8,17 +13,15 @@ void displayMenuScreen(Room* currentRoom){
 
 
 void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom){ // Maybe use displayRoom
-    triggerEvent(currentRoom, player);
     // Update player's current room
     updatePlayerRoom(player, currentRoom);
     if (isNewRoom == true){
-        displayMenuScreen(currentRoom);
+        triggerEvent(currentRoom, player);
+        displayRoomMenuScreen(currentRoom);
         //add roomId to path
     }
 
-    char choice;
-    scanf(" %c", &choice);
-    choice = (char) toupper((int) choice);
+    char choice = getUserInputCommand();
     // printf("\nChoice: %c", choice);
 
     switch (choice) {
@@ -38,7 +41,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom){ // Maybe
             printf("\nEnter the item ID to pick up:\n");
             int pickupItemID = parse_item_command();
             pickUpItem(player, pickupItemID);
-            displayMenuScreen(currentRoom);
+            displayRoomMenuScreen(currentRoom);
             exploreDungeon(currentRoom, player, false); // would like to redisplay room
             break;
         case USE:
@@ -54,7 +57,7 @@ void exploreDungeon(Room* currentRoom, Player* player, bool isNewRoom){ // Maybe
             printf("\nEnter the item ID to drop:\n");
             int dropItemID = parse_item_command();
             dropItem(player, dropItemID);
-            displayMenuScreen(currentRoom);
+            displayRoomMenuScreen(currentRoom);
             exploreDungeon(currentRoom, player, false);
             break;
         case NORTH: // If there is no path and already traversed path includes 90% of the room count the expand current room to create more path

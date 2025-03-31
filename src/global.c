@@ -2,7 +2,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-
+/// @brief Generate a random int between start and end inclusive
+/// @param start 
+/// @param end 
+/// @return Randomly generated integer value
 int generateRandomInt(int start, int end){
     return (rand()%((end-start)+1))+start;
 }
@@ -40,19 +43,21 @@ int* generateRandomIntArr(int* arr,  int arrSize,int start, int end, int filledC
 
 // Fill an array with random numbers based on probability
 int* generateRandomIntArrProb(int* arr, int arrSize, int start, int end, int* numberOccurenceProbArr, int numberOccurenceProbArrCount){
-    if (start != 0) return NULL; // might have to remove this since we are gewtting the randIndex from the for loop
+    // if (start != 0) return NULL; // might have to remove this since we are gewtting the randIndex from the for loop
 
     int probSum = 0;
     for (int i=0; i<numberOccurenceProbArrCount; i++){
         probSum += numberOccurenceProbArr[i];
     }
-    // printf("\nSum: %d", probSum);
-    if (probSum < 100) return NULL; // Because might cause an inifinite loop;
+    if (probSum < 100) {
+        printf("\nThe sum of the probability arr has to be at least 100%%");
+        return NULL;
+     } // Because might cause an inifinite loop;
 
     int* numberOccurenceArr = calloc(numberOccurenceProbArrCount, sizeof(int));
 
     if (numberOccurenceArr == NULL){
-        perror("Could not allocate memory for numberOccurenceArr");
+        perror("\nCould not allocate memory for numberOccurenceArr");
         return NULL;
     }
 

@@ -27,10 +27,12 @@ typedef enum Commands{
     USE = 'U',
     DROP = 'D',
     INVENTORY = 'I',
+    ACCEPT = 'A',
+    DECLINE = 'X'
 } Commands;
 
 int parse_room_command();
-
+char getUserInputCommand();
 int parse_item_command();
 
 #endif

@@ -68,6 +68,8 @@ Room* constructRandomRoom(int roomCount, int noItems, int noEvents){
     
     Room* room = Room_construct(roomCount, NULL, NULL, NULL, NULL, events, items);
 
+    free(eventsArr);
+    free(itemsArr);
     return room;
 }
 
@@ -92,7 +94,7 @@ void reallocRooms(Room*** roomsPtr, int* allocRoomsSize, int expectedSize){
         }
         *roomsPtr = newPtr;
         (*allocRoomsSize) = (expectedSize+20);
-        printf("\nReallocating: %d %d\n", *allocRoomsSize, expectedSize);
+        // printf("\nReallocating: %d %d\n", *allocRoomsSize, expectedSize);
     }
 }
 
@@ -108,12 +110,18 @@ void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsTo
      // Array that stores a random number of items for all rooms to add
     int* roomsItemsCountArr = malloc(sizeof(int)*noRoomsToAdd);
     int itemsOccurenceProbArr[] = {40, 30, 20, 10}; // {0: 40%, 1: 30%, 2: 20%, 3: 10%}
-    generateRandomIntArrProb(roomsItemsCountArr, noRoomsToAdd, 0, MAX_ITEMS_IN_ROOM, itemsOccurenceProbArr, (MAX_ITEMS_IN_ROOM+1));
+    if (generateRandomIntArrProb(roomsItemsCountArr, noRoomsToAdd, 0, MAX_ITEMS_IN_ROOM, itemsOccurenceProbArr, (MAX_ITEMS_IN_ROOM+1)) == NULL){
+        printf("There was an issue generating the random probability array.");
+        return;
+    }
 
      // Array that stores a random number of events for all rooms to add
     int* roomsEventsCountArr = malloc(sizeof(int)*noRoomsToAdd);
     int eventsOccurenceProbArr[] = {45, 40, 10, 5}; // {0: 45%, 1: 40%, 2: 10%, 3: 5%}
-    generateRandomIntArrProb(roomsEventsCountArr, noRoomsToAdd, 0, MAX_ROOM_EVENTS, eventsOccurenceProbArr, (MAX_ROOM_EVENTS+1));
+    if (generateRandomIntArrProb(roomsEventsCountArr, noRoomsToAdd, 0, MAX_ROOM_EVENTS, eventsOccurenceProbArr, (MAX_ROOM_EVENTS+1)) == NULL){
+        printf("\nThere was an issue generating the random probability array.");
+        return;
+    }
 
     // Iteratively expand using Breath First Search approach;
     int addedRoomsCount = 0;
@@ -203,6 +211,8 @@ void displayRoom(Room* room){
     printf("\nRoom - ID: %d", room->ID);
     printf("\nItems in room (%d): ", itemListCount(room->items));
     printItemList(room->items);
+    printf("\nEvents in room (%d): ", eventListCount(room->events));
+    printEventList(room->events);
     printf("\nRoom Connections: %d %d %d %d", room->north != NULL?room->north->ID:DNE, room->south != NULL?room->south->ID:DNE, room->west != NULL?room->west->ID:DNE, room->east != NULL?room->east->ID:DNE);
     printf("\n");
 }

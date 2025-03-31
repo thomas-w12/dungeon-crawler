@@ -1,10 +1,20 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#define ITEM_TYPES (const char*[]){"sword", "stone", "shield", "ladder", "potion", "key"}
-#define ITEM_DESCRIPTIONS (const char*[]){"Fight off monsters", "Stone the giant", "Shield against trap", "Climb out of trap", "+ 50 health", "open locked door"}
+#define ITEM_TYPES (const char*[]){"sword", "shield", "ladder", "potion", "key", "pickaxe"}
+#define ITEM_DESCRIPTIONS (const char*[]){"Fight off monsters", "Shield against trap", "Climb out of trap", "+ 50 health", "open locked door", "break blocked room"}
 #define TOTAL_ITEMS_COUNT 6 // update this count every time a new item is added to the ITEM_TYPES and ITEM_DESCRIPTIONS
 // maybe pickaxe item to generate n path from current room
+
+typedef enum ItemsID{
+    SWORD,
+    SHIELD,
+    LADDER,
+    POTION,
+    KEY,
+    PICKAE,
+} ItemsID;
+
 
 typedef struct Item{
     // Item type and description depends on the item id
@@ -18,7 +28,7 @@ typedef struct ItemNode{
     struct ItemNode* next;
 } ItemNode;
 
-Item* Item_construct(int ID);
+Item* Item_construct(int itemID);
 ItemNode* ItemNode_construct(Item* item);
 ItemNode* ItemList_insert(ItemNode** head, Item* item);
 Item* ItemList_deleteAtIndex(ItemNode** head, int itemIndex);

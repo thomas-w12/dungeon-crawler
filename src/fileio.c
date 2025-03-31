@@ -24,13 +24,6 @@ int saveLayout(const char* layoutStateFPath, Room** rooms, int roomCount) {
                 (room->south ? room->south->ID : DNE),
                 (room->west ? room->west->ID : DNE),
                 (room->east ? room->east->ID : DNE));
-
-        // This loops twice
-        // int arr[MAX_ROOM_EVENTS];
-        // eventListToArray(room->events, arr, MAX_ROOM_EVENTS);
-        // for (int j = 0; j < MAX_ROOM_EVENTS; j++) {
-        //     fprintf(file, "%d,", arr[j]);
-        // }
         
         EventNode* currEvent = room->events;
         for (int j=0; j<MAX_ROOM_EVENTS; j++){
