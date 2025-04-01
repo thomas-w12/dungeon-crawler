@@ -15,7 +15,11 @@ int main() {
     ItemList_insert(&roomItems, item2);
     ItemList_insert(&roomItems, item3);
 
+    int roomCount = 0;
+    Room** rooms = malloc(sizeof(Room*) * 1);
     Room* room = Room_construct(0, NULL, NULL, NULL, NULL, NULL, roomItems);
+    rooms[0] = room;
+    roomCount++;
     assert(room != NULL);
 
     // Create a player
@@ -56,7 +60,7 @@ int main() {
 
     // Cleanup
     freePlayer(player);
-    freeRooms(&room, &(int){1});
+    freeRooms(&rooms, &roomCount);
 
     printf("All tests passed!\n");
     return EXIT_SUCCESS;
