@@ -91,7 +91,7 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
 
             printf("\n");
             displayRoom(currentRoom);
-            displayRoomMenuScreen(currentRoom);
+            displayRoomMenuScreen();
             break;
         }
         case USE:{
@@ -116,7 +116,7 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
 
             printf("\n");
             displayRoom(currentRoom);
-            displayRoomMenuScreen(currentRoom);
+            displayRoomMenuScreen();
             break;
         }
         case NORTH: // If there is no path and already traversed path includes 90% of the room count the expand current room to create more path
