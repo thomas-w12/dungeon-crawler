@@ -32,11 +32,15 @@ player_save_load_test: $(OBJDIR)/player_save_load_test.o $(OBJS)
 	$(CC) $(CFLAGS) $(OBJDIR)/player_save_load_test.o $(OBJS) -o $(OBJDIR)/player_save_load_test_runner
 	$(OBJDIR)/player_save_load_test_runner
 
-sample_test: $(OBJDIR)/sample_test.o $(OBJS)
-	$(CC) $(CFLAGS) $(OBJDIR)/sample_test.o $(OBJS) -o $(OBJDIR)/sample_test_runner
-	$(OBJDIR)/sample_test_runner
+player_health_test: $(OBJDIR)/player_health_test.o $(OBJS)
+	$(CC) $(CFLAGS) $(OBJDIR)/player_health_test.o $(OBJS) -o $(OBJDIR)/player_health_test_runner
+	$(OBJDIR)/player_health_test_runner
 
-test: player_save_load_test layout_save_load_test
+item_pickup_inventory_test: $(OBJDIR)/item_pickup_inventory_test.o $(OBJS)
+	$(CC) $(CFLAGS) $(OBJDIR)/item_pickup_inventory_test.o $(OBJS) -o $(OBJDIR)/item_pickup_inventory_test_runner
+	$(OBJDIR)/item_pickup_inventory_test_runner
+
+test: player_save_load_test layout_save_load_test item_pickup_inventory_test
 
 clean:
 	@if exist $(EXE) del /f /q $(EXE)

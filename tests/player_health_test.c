@@ -30,7 +30,7 @@ int main() {
     Room* room1 = Room_construct(1, NULL, NULL, NULL, NULL, NULL, NULL);
 
     if (room != NULL){
-        // room->south = room1;
+        room->south = room1;
         rooms[room->ID] = room;
         roomCount ++;
         // displayRoom(room);
@@ -46,12 +46,11 @@ int main() {
     int* playerPath = malloc(sizeof(int)*roomCount);
     int allocPathSize = 0;
     int playerPathCount = 0;
-    Player* player = Player_construct("Player", 0, 100, 0, NULL); // We need this store player inventory
+    Player* player = Player_construct("Player", 0, 100, 0, rooms[0]); // We need this store player inventory
 
-    // exploreDungeon(NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
+    exploreDungeon(&rooms, &roomCount, &allocRoomSize, NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
 
-    
-
+    freePlayer(player);
     freeRooms(&rooms, &roomCount);
 
     return EXIT_SUCCESS;
