@@ -66,7 +66,8 @@ int main() {
     // expandRoom(&rooms, room, &roomCount, 10, &allocRoomSize);
 
     Player* player;
-    while (true){
+    bool exitGame = false;
+    while (!exitGame){
         displayMainMenu();
         char choice = getUserInputCommand();
         switch(choice){
@@ -84,7 +85,8 @@ int main() {
                 break;
             case EXIT:
                 printf("Quiting game...\n");
-                return EXIT_SUCCESS;
+                exitGame = true;
+                break;
             default:
                 printf("Invalid command\n");
                 displayMainMenu();

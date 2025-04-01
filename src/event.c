@@ -31,13 +31,13 @@ EventNode* EventList_insert(EventNode** head, Event event){
         EventNode* curr = *head;
 
         while(curr->next != NULL){
-            if (curr->data == event){
-                perror("Duplicate events are not allowed\n");
-                return NULL;
-            }
             curr = curr->next;
         }
 
+        if (curr->data == event){
+            printf("Duplicate events are not allowed\n");
+            return NULL;
+        }
         curr->next = eventNode;
     }
 
