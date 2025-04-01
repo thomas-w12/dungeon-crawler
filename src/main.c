@@ -71,17 +71,18 @@ int main() {
         displayMainMenu();
         char choice = getUserInputCommand();
         switch(choice){
-            case LOAD_GAME:
+            case LOAD_GAME:{
                 printf("Loading saved game...\n");
                 loadGame(layoutStateFPath, playerStateFPath, &rooms, &roomCount, &allocRoomSize, &player);
 
                 Room* prevRoom = NULL;
-                exploreDungeon(NULL, rooms[player->currentRoom], player, &playerPath, &allocPathSize, &playerPathCount);
+                exploreDungeon(&rooms, &roomCount, &allocRoomSize, prevRoom, rooms[player->currentRoom], player, &playerPath, &allocPathSize, &playerPathCount);
                 break;
+            }
             case NEW_GAME:
                 printf("Generating a new game...\n");
                 newGame(&rooms, &roomCount, 20, &allocRoomSize, &player);
-                exploreDungeon(NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
+                exploreDungeon(&rooms, &roomCount, &allocRoomSize, NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
                 break;
             case EXIT:
                 printf("Quiting game...\n");

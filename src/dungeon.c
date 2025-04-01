@@ -17,7 +17,7 @@ void printPlayerPath(int* playerPath, int playerPathCount){
     printf("\n");
 }
 
-void exploreDungeon(Room* prevRoom, Room* currentRoom, Player* player, int** playerPathPtr, int* allocPathSize, int* playerPathCount){
+void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room* prevRoom, Room* currentRoom, Player* player, int** playerPathPtr, int* allocPathSize, int* playerPathCount){
     printf("\n");
     if (player->health <= 0){
         printf("You are dead. Game over.\n");
@@ -28,7 +28,7 @@ void exploreDungeon(Room* prevRoom, Room* currentRoom, Player* player, int** pla
     if ((prevRoom == NULL) || (prevRoom->ID != currentRoom->ID)){
         displayRoom(currentRoom);
         if (triggerEvents(currentRoom, player) == false) {
-            exploreDungeon(prevRoom, prevRoom, player, playerPathPtr, allocPathSize, playerPathCount);
+            exploreDungeon(roomsPtr, roomsCount, allocRoomSize, prevRoom, prevRoom, player, playerPathPtr, allocPathSize, playerPathCount);
             return;
         }
 
@@ -46,7 +46,6 @@ void exploreDungeon(Room* prevRoom, Room* currentRoom, Player* player, int** pla
 
         // printPlayerPath(*playerPathPtr, *playerPathCount);
         displayRoomMenuScreen();
-        increasePlayerScore(player, 10); // score is the % of map visited maybe?
     }
 
     // Update player's current room
@@ -66,7 +65,7 @@ void exploreDungeon(Room* prevRoom, Room* currentRoom, Player* player, int** pla
         case INVENTORY:
             displayPlayerInventory(player);
             break;
-        case PICKUP:
+        case PICKUP:{
             if (itemListCount(currentRoom->items) == 0){
                 printf("There are no items to pick up.\n");
                 break;
@@ -77,7 +76,8 @@ void exploreDungeon(Room* prevRoom, Room* currentRoom, Player* player, int** pla
             displayRoom(currentRoom);
             displayRoomMenuScreen(currentRoom);
             break;
-        case USE:
+        }
+        case USE:{
             if (itemListCount(player->inventory) == 0){ // Redundant, should remove
                 printf("Inventory is empty. There is no item to use.\n");
                 return;
@@ -87,7 +87,8 @@ void exploreDungeon(Room* prevRoom, Room* currentRoom, Player* player, int** pla
             int useItemID = parse_item_command();
             useItem(player, useItemID);
             break;
-        case DROP:
+        }
+        case DROP:{
             if (itemListCount(player->inventory) == 0){
                 printf("There are no items in your inventory.\n");
                 break;
@@ -98,10 +99,11 @@ void exploreDungeon(Room* prevRoom, Room* currentRoom, Player* player, int** pla
             displayRoom(currentRoom);
             displayRoomMenuScreen(currentRoom);
             break;
+        }
         case NORTH: // If there is no path and already traversed path includes 90% of the room count the expand current room to create more path
             if (currentRoom->north == NULL) {
                 printf("There is no path on the north.\n");
-                // if ((*playerPathCount) > (*)){
+                // if ((*playerPathCount) > (*roomsCount * 0.5)){
 
                 // }
                 break;;
@@ -140,5 +142,5 @@ void exploreDungeon(Room* prevRoom, Room* currentRoom, Player* player, int** pla
             printf("Invalid choice!\nEnter a valid choice\n");
             break;
     }
-    exploreDungeon(currentRoom, nextRoom, player, playerPathPtr, allocPathSize, playerPathCount);
+    exploreDungeon(roomsPtr, roomsCount, allocRoomSize, currentRoom, nextRoom, player, playerPathPtr, allocPathSize, playerPathCount);
 }

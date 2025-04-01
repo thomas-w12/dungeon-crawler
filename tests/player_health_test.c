@@ -48,7 +48,7 @@ int main() {
     int playerPathCount = 0;
     Player* player = Player_construct("Player", 0, 100, 0, NULL); // We need this store player inventory
 
-    exploreDungeon(NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
+    // exploreDungeon(NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
 
     
 

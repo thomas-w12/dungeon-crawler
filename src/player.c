@@ -191,11 +191,12 @@ bool triggerLockedEvent(Room* room, Player* player){
 bool triggerPitTrapEvent(Player* player){
     if (ItemList_deleteItemID(&player->inventory, LADDER) != NULL){
         printf("\nYou just fell into a pit, but you climbed out of it with your ladder!\n");
+        return true;
     }else{
         printf("\nYou just fell into a pit.\n");
         decreasePlayerHealth(player, 100);
+        return false;
     }
-    return true;
 }
 
 bool triggerPuzzleEvent(Room* room, Player* player, int puzzleIndex){
@@ -242,46 +243,67 @@ bool triggerEvent(Room* room, Player* player, Event currEvent){
             printf("This room is a normal room\n");
             EventList_delete(&room->events, currEvent);
             eventPassed = true;
+            
+            increasePlayerScore(player, 0);
             break;
         case BLOCKED:
             printf("This room is blocked, you need a pick axe to break through\nPress:\nU - use an item\nX - Ignore room\n");
             eventPassed = triggerBlockedEvent(room, player);
-            if (eventPassed) EventList_delete(&room->events, currEvent);
+            if (eventPassed) {
+                EventList_delete(&room->events, currEvent);
+                increasePlayerScore(player, 10);
+            }
             break;
         case LOCKED:
             printf("This room is locked, you need a key to open it\nPress:\nU - use an item\nX - Ignore room\n");
             eventPassed = triggerLockedEvent(room, player);
-            if (eventPassed) EventList_delete(&room->events, currEvent);
+            if (eventPassed) {
+                EventList_delete(&room->events, currEvent);
+                increasePlayerScore(player, 10);
+            }
             break;
         case FIRE_TRAP:
             printf("You just got caught in a fire trap!\n");
             decreasePlayerHealth(player, 25);
             eventPassed = true;
+            increasePlayerScore(player, 5);
             break;
         case PIT_TRAP:
             eventPassed = triggerPitTrapEvent(player);
+            if (eventPassed){
+                EventList_delete(&room->events, currEvent);
+                increasePlayerScore(player, 15);
+            }
             break;
-        case PUZZLE:
+        case PUZZLE:{
             printf("You have to solve this puzzle to continue to this room\n");
             int puzzleIndex = generateRandomInt(0, PUZZLE_COUNT-1);
             printf("%s\n", PUZZLE_QUESTIONS[puzzleIndex]);
             eventPassed = triggerPuzzleEvent(room, player, puzzleIndex);
-            if (eventPassed) EventList_delete(&room->events, currEvent);
+            if (eventPassed) {
+                EventList_delete(&room->events, currEvent);
+                increasePlayerScore(player, 10);
+            }
             break;
+        }
         case NPC_BOSS:
-            break;
         case NPC_TRADE:
-        case NPC_TALK:
+        case NPC_TALK:{
             NPC npc = createNPC(currEvent);
             npc.interact(&npc, player);
             eventPassed = true;
 
-            if (currEvent == NPC_BOSS) EventList_delete(&room->events, currEvent);
+            if (currEvent == NPC_BOSS) {
+                EventList_delete(&room->events, currEvent);
+                increasePlayerScore(player, 10);
+            }
             break;
+        }
         case POISON_TRAP:
             printf("You just entered a poison room!\n");
             decreasePlayerHealth(player, 15);
             eventPassed = true;
+            increasePlayerScore(player, 5);
             break;
     }
 
