@@ -47,13 +47,13 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
         }
 
         if (*playerPathCount >= *allocPathSize){
-            int* newPtr = realloc(*playerPathPtr, (*allocPathSize+50));
+            int* newPtr = realloc(*playerPathPtr, sizeof(int)*((*allocPathSize)+50));
             if (newPtr == NULL){
                 printf("Could not reallocate memory for player path\n");
                 return;
             }
             *playerPathPtr = newPtr;
-            *allocPathSize += 50;
+            (*allocPathSize) += 50;
         }
         (*playerPathPtr)[*playerPathCount] = currentRoom->ID;
         (*playerPathCount)++;
@@ -97,7 +97,7 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
         case USE:{
             if (itemListCount(player->inventory) == 0){ // Redundant, should remove
                 printf("Inventory is empty. There is no item to use.\n");
-                return;
+                break;
             }
             
             printf("Enter the item ID to use: ");

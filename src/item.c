@@ -33,6 +33,7 @@ ItemNode* ItemNode_construct(Item* item){
 ItemNode* ItemList_insert(ItemNode** head, Item* item){
     ItemNode* itemNode = ItemNode_construct(item);
     if (itemNode == NULL){
+        freeItem(item);
         perror("Failed Item List insert\n");
         return NULL;
     }
@@ -45,6 +46,8 @@ ItemNode* ItemList_insert(ItemNode** head, Item* item){
         while(curr->next != NULL){
             if (curr->data->ID == item->ID){
                 printf("Duplicate items are not allowed\n");
+                freeItem(item);
+                free(itemNode);
                 return NULL;
             }
             curr = curr->next;
@@ -52,6 +55,8 @@ ItemNode* ItemList_insert(ItemNode** head, Item* item){
 
         if (curr->data->ID == item->ID){
             printf("Duplicate items are not allowed\n");
+            freeItem(item);
+            free(itemNode);
             return NULL;
         }
         curr->next = itemNode;
@@ -198,7 +203,7 @@ void freeItem(Item* item){
 void freeItemNode(ItemNode* itemNode){
     if (itemNode == NULL) return;
     freeItemNode(itemNode->next);
-    free(itemNode->data);
+    freeItem(itemNode->data);
     free(itemNode);
 }
 

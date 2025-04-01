@@ -154,7 +154,10 @@ int loadPlayerState(const char* playerStateFPath, Player* player) {
 
     strcpy(player->name, nameBuffer);
     
-    player->inventory = NULL;
+    if (player->inventory != NULL){
+        printf("Inventory stuff\n\n\n\n");
+        freeItemList(&player->inventory);
+    }
     for (int j=0; j<MAX_ITEMS_IN_ROOM; j++){
         int itemID;
         fscanf(file, "%d,", &itemID);

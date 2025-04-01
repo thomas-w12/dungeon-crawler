@@ -62,10 +62,10 @@ void npcAttack(NPC* npc, Player* player){
 void npcTalk(NPC* npc, Player* player){
     printf("%s\n", npc->dialogue);
     printf("Press: \nA - hear him out\nX - not interested\n");
-    char choice = getUserInputCommand();
 
     bool correctCommand = false;
     while (! correctCommand){
+        char choice = getUserInputCommand();
         switch(choice){
             case ACCEPT: {
                 int convoIndex = generateRandomInt(0, NPC_RANDOM_CONVO_COUNT-1);
@@ -80,6 +80,7 @@ void npcTalk(NPC* npc, Player* player){
             default:
                 printf("Invalid command\n");
                 printf("Press: \nA - hear him out\nX - not interested\n");
+                break;
         }
     }
 }
@@ -133,6 +134,7 @@ void npcTrade(NPC* npc, Player* player){
     while (! correctCommand){
         switch(choice){
             case ACCEPT:
+                displayPlayer(player);
                 if (itemListCount(player->inventory) < 2){
                     printf("You do not have enough items to trade!\n");
                 }else{

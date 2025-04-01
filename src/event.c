@@ -33,6 +33,7 @@ EventNode* EventList_insert(EventNode** head, Event event){
         while(curr->next != NULL){
             if (curr->data == event){
                 printf("Duplicate events are not allowed\n");
+                free(eventNode);
                 return NULL;
             }
             curr = curr->next;
@@ -40,6 +41,7 @@ EventNode* EventList_insert(EventNode** head, Event event){
 
         if (curr->data == event){
             printf("Duplicate events are not allowed\n");
+            free(eventNode);
             return NULL;
         }
         curr->next = eventNode;

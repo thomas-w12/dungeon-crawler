@@ -25,7 +25,7 @@ bool newGame(Room*** roomsPtr, int* roomCount, int noOfRooms, int* allocRoomSize
     clearBuffer();
 
     generateLayout(roomsPtr, roomCount, noOfRooms, allocRoomSize);
-    free(*playerPtr);
+    freePlayer(*playerPtr);
     *playerPtr = Player_construct(playerNameBuff, 0, 100, 0, NULL);
 
     return true;
@@ -64,6 +64,7 @@ void displayMainMenu(){
 
 int main() {
     srand(time(0));
+    printf("%ld\n",sizeof(Item));
 
     char layoutStateFPath[] = {"saved_games/layoutState.txt"};
     char playerStateFPath[] = {"saved_games/playerState.txt"};

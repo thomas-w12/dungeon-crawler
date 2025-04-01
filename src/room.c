@@ -95,7 +95,7 @@ void reallocRooms(Room*** roomsPtr, int* allocRoomsSize, int expectedSize){
 }
 
 void expandRoom(Room*** roomsPtr, Room* firstRoom, int* roomCount, int noRoomsToAdd, int* allocRoomsSize){
-    reallocRooms(roomsPtr, allocRoomsSize, (*roomCount + noRoomsToAdd)); // only reallocate if needed
+    reallocRooms(roomsPtr, allocRoomsSize, ((*roomCount) + noRoomsToAdd)); // only reallocate if needed
 
     Room** rooms = (*roomsPtr);
 
