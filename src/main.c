@@ -17,22 +17,22 @@
 // Should we show user available connections? N, S, W
 // Should we give the user option to expand room?
 
-bool loadGame(char* layoutStateFPath, char* playerStateFPath, Room*** roomsPtr, int* roomCount, int* allocRoomSize, Player** playerPtr){ // Need to check if there is a saved file and also if the saved file is empty or valid
-    *playerPtr = Player_construct("Player", 0, 100, 0, NULL); 
+bool loadGame(char* layoutStateFPath, char* playerStateFPath, Room*** roomsPtr, int* roomCount, int* allocRoomSize, Player* player){ // Need to check if there is a saved file and also if the saved file is empty or valid
     loadLayout(layoutStateFPath, roomsPtr, roomCount, allocRoomSize);
-    loadPlayerState(playerStateFPath, *playerPtr);
+    loadPlayerState(playerStateFPath, player);
 
     return true;
 }
 
-bool newGame(Room*** roomsPtr, int* roomCount, int noOfRooms, int* allocRoomSize, Player** playerPtr){
+bool newGame(Room*** roomsPtr, int* roomCount, int noOfRooms, int* allocRoomSize, Player* player){
     char playerNameBuff[100];
     printf("Enter player name: ");
     scanf(" %99[^\n]", playerNameBuff);
     clearBuffer();
 
     generateLayout(roomsPtr, roomCount, noOfRooms, allocRoomSize);
-    *playerPtr = Player_construct(playerNameBuff, 0, 100, 0, NULL); 
+    free(player->name);
+    player->name = strdup(playerNameBuff);
 
     return true;
 }
@@ -55,7 +55,7 @@ int main() {
         return EXIT_FAILURE;
     }
     
-    int* playerPath = malloc(sizeof(int)*roomCount);
+    int* playerPath = malloc(sizeof(int)*allocRoomSize);
     if (playerPath == NULL){
         perror("Could not allocate memory for player path\n");
         return EXIT_FAILURE;
@@ -65,7 +65,7 @@ int main() {
 
     // expandRoom(&rooms, room, &roomCount, 10, &allocRoomSize);
 
-    Player* player;
+    Player* player = Player_construct("Player", 0, 100, 0, NULL); 
     bool exitGame = false;
     while (!exitGame){
         displayMainMenu();
@@ -73,7 +73,7 @@ int main() {
         switch(choice){
             case LOAD_GAME:{
                 printf("Loading saved game...\n");
-                loadGame(layoutStateFPath, playerStateFPath, &rooms, &roomCount, &allocRoomSize, &player);
+                loadGame(layoutStateFPath, playerStateFPath, &rooms, &roomCount, &allocRoomSize, player);
 
                 Room* prevRoom = NULL;
                 exploreDungeon(&rooms, &roomCount, &allocRoomSize, prevRoom, rooms[player->currentRoom], player, &playerPath, &allocPathSize, &playerPathCount);
@@ -81,7 +81,7 @@ int main() {
             }
             case NEW_GAME:
                 printf("Generating a new game...\n");
-                newGame(&rooms, &roomCount, 20, &allocRoomSize, &player);
+                newGame(&rooms, &roomCount, 20, &allocRoomSize, player);
                 exploreDungeon(&rooms, &roomCount, &allocRoomSize, NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
                 break;
             case EXIT:

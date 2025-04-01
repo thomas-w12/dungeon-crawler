@@ -67,11 +67,12 @@ void npcTalk(NPC* npc, Player* player){
     bool correctCommand = false;
     while (! correctCommand){
         switch(choice){
-            case ACCEPT:
+            case ACCEPT: {
                 int convoIndex = generateRandomInt(0, NPC_RANDOM_CONVO_COUNT-1);
                 printf("%s\n", NPC_RANDOM_CONVO[convoIndex]);
                 correctCommand = true;
                 break;
+            }
             case DECLINE:
                 printf("Understandable have a nice day!\n");
                 correctCommand = true;
