@@ -10,12 +10,6 @@
 #include "../include/event.h"
 #include "../include/global.h"
 
-// Give user feedback to let them know they cant pick duplicate items
-// When player health is 0, display you died amd show main menu (Not sure if we should save state)
-// Player can pick up duplicates but won't be validated (removed from room but not added to player inventory)
-// Bug after falling in pit
-// Should we show user available connections? N, S, W
-// Should we give the user option to expand room?
 
 bool loadGame(char* layoutStateFPath, char* playerStateFPath, Room*** roomsPtr, int* roomCount, int* allocRoomSize, Player* player){ // Need to check if there is a saved file and also if the saved file is empty or valid
     loadLayout(layoutStateFPath, roomsPtr, roomCount, allocRoomSize);
@@ -74,7 +68,7 @@ int main() {
     char layoutStateFPath[] = {"saved_games/layoutState.txt"};
     char playerStateFPath[] = {"saved_games/playerState.txt"};
 
-    int allocRoomSize = 10; // initial rooms alloc size
+    int allocRoomSize = INITIAL_NO_OF_ROOMS; // initial rooms alloc size
     int roomCount = 0;
     Room** rooms = malloc(sizeof(Room*) * allocRoomSize);
     if (rooms == NULL){
@@ -89,8 +83,6 @@ int main() {
     }
     int allocPathSize = 0;
     int playerPathCount = 0;
-
-    // expandRoom(&rooms, room, &roomCount, 10, &allocRoomSize);
 
     Player* player = Player_construct("Player", 0, 100, 0, NULL); 
     bool exitGame = false;
@@ -113,7 +105,7 @@ int main() {
 
                 if (resetParams(&rooms, &roomCount, &allocRoomSize, &playerPath, &allocPathSize, &playerPathCount, &player) == false) return EXIT_FAILURE;
                 
-                newGame(&rooms, &roomCount, 20, &allocRoomSize, player);
+                newGame(&rooms, &roomCount, INITIAL_NO_OF_ROOMS, &allocRoomSize, player);
                 exploreDungeon(&rooms, &roomCount, &allocRoomSize, NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
                 break;
             case EXIT:

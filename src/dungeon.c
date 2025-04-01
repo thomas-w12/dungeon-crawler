@@ -24,8 +24,8 @@ void expand(Room*** roomsPtr, Room* room, int* allocRoomSize, int* roomsCount, i
     connections += (room->west == NULL ? 0 : 1);
     connections += (room->east == NULL ? 0 : 1);
 
-    // If player is at a dead end and has traversed at least 50% of the total rooms
-    if ((connections <= 1) && ((float) (playerPathCount) > (float) (*roomsCount * 0.5))){
+    // If player is at a dead end and has traversed at least 30% of the total rooms
+    if ((connections <= 1) && ((float) (playerPathCount) > (float) (*roomsCount * 0.3))){
         printf("Expanding room. Connections: %d. Traversed count: %d\n", connections, playerPathCount);
         expandRoom(roomsPtr, room, roomsCount, EXPAND_ROOM_COUNT, allocRoomSize);
     }
