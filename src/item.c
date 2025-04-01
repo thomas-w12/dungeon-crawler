@@ -43,6 +43,10 @@ ItemNode* ItemList_insert(ItemNode** head, Item* item){
         ItemNode* curr = *head;
 
         while(curr->next != NULL){
+            if (curr->data->ID == item->ID){
+                printf("Duplicate items are not allowed\n");
+                return NULL;
+            }
             curr = curr->next;
         }
 

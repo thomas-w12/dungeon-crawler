@@ -17,8 +17,21 @@ void printPlayerPath(int* playerPath, int playerPathCount){
     printf("\n");
 }
 
+void expand(Room*** roomsPtr, Room* room, int* allocRoomSize, int* roomsCount, int playerPathCount){
+    int connections = 0;
+    connections += (room->north == NULL ? 0 : 1);
+    connections += (room->south == NULL ? 0 : 1);
+    connections += (room->west == NULL ? 0 : 1);
+    connections += (room->east == NULL ? 0 : 1);
+
+    // If player is at a dead end and has traversed at least 50% of the total rooms
+    if ((connections <= 1) && ((float) (playerPathCount) > (float) (*roomsCount * 0.5))){
+        printf("Expanding room. Connections: %d. Traversed count: %d\n", connections, playerPathCount);
+        expandRoom(roomsPtr, room, roomsCount, EXPAND_ROOM_COUNT, allocRoomSize);
+    }
+}
+
 void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room* prevRoom, Room* currentRoom, Player* player, int** playerPathPtr, int* allocPathSize, int* playerPathCount){
-    printf("\n");
     if (player->health <= 0){
         printf("You are dead. Game over.\n");
         return;
@@ -26,6 +39,7 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
 
     // Assumption that there would be zero events in the entry room
     if ((prevRoom == NULL) || (prevRoom->ID != currentRoom->ID)){
+        printf("\n");
         displayRoom(currentRoom);
         if (triggerEvents(currentRoom, player) == false) {
             exploreDungeon(roomsPtr, roomsCount, allocRoomSize, prevRoom, prevRoom, player, playerPathPtr, allocPathSize, playerPathCount);
@@ -56,6 +70,7 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
     Room* nextRoom = currentRoom;
     switch (choice) {
         case ROOM:
+            printf("\n");
            displayRoom(currentRoom);
            displayRoomMenuScreen();
            break;
@@ -73,6 +88,8 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
             printf("Enter the item ID to pick up: ");
             int pickupItemID = parse_item_command();
             pickUpItem(player, pickupItemID);
+
+            printf("\n");
             displayRoom(currentRoom);
             displayRoomMenuScreen(currentRoom);
             break;
@@ -96,6 +113,8 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
             printf("Enter the item ID to drop: ");
             int dropItemID = parse_item_command();
             dropItem(player, dropItemID);
+
+            printf("\n");
             displayRoom(currentRoom);
             displayRoomMenuScreen(currentRoom);
             break;
@@ -103,9 +122,7 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
         case NORTH: // If there is no path and already traversed path includes 90% of the room count the expand current room to create more path
             if (currentRoom->north == NULL) {
                 printf("There is no path on the north.\n");
-                // if ((*playerPathCount) > (*roomsCount * 0.5)){
-
-                // }
+                expand(roomsPtr, currentRoom, allocRoomSize, roomsCount, *playerPathCount);
                 break;;
             }
             printf("Moving to the north\n");
@@ -114,6 +131,7 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
         case SOUTH:
             if (currentRoom->south == NULL) {
                 printf("There is no path on the south.\n");
+                expand(roomsPtr, currentRoom, allocRoomSize, roomsCount, *playerPathCount);
                 break;
             }
             printf("Moving to the south\n");
@@ -122,6 +140,7 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
         case WEST:
             if (currentRoom->west == NULL) {
                 printf("There is no path on the west.\n");
+                expand(roomsPtr, currentRoom, allocRoomSize, roomsCount, *playerPathCount);
                 break;
             }
             printf("Moving to the west\n");
@@ -130,6 +149,7 @@ void exploreDungeon(Room*** roomsPtr, int* roomsCount, int* allocRoomSize, Room*
         case EAST:
             if (currentRoom->east == NULL) {
                 printf("There is no path on the east.\n");
+                expand(roomsPtr, currentRoom, allocRoomSize, roomsCount, *playerPathCount);
                 break;
             }
             printf("Moving to the east\n");

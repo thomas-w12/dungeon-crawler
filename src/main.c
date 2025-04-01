@@ -37,6 +37,33 @@ bool newGame(Room*** roomsPtr, int* roomCount, int noOfRooms, int* allocRoomSize
     return true;
 }
 
+bool resetParams(Room*** roomsPtr, int* roomCount, int* allocRoomSize, int** playerPathPtr, int*allocPathSize , int* playerPathCount, Player** playerPtr){
+    if (*roomCount > 0){
+        free(*playerPathPtr);
+        freeRooms(roomsPtr, roomCount);
+        freePlayer(*playerPtr);
+
+        *allocRoomSize = 10;
+        *roomCount = 0;
+        *roomsPtr = malloc(sizeof(Room*) * (*allocRoomSize));
+        if (*roomsPtr == NULL){
+            perror("Could not allocate memory for rooms\n");
+            return false;
+        }
+        
+        *playerPathPtr = malloc(sizeof(int) * (*allocRoomSize));
+        if (*playerPathPtr == NULL){
+            perror("Could not allocate memory for player path\n");
+            return false;
+        }
+        *allocPathSize = 0;
+        *playerPathCount = 0;
+
+        *playerPtr = Player_construct("Player", 0, 100, 0, NULL);
+    }
+    return true;
+}
+
 void displayMainMenu(){
     printf("\nMain Menu Screen\nPress:\nL - Load saved game\nT - Start a new game\nQ - Quit the game\n");
 }
@@ -73,6 +100,8 @@ int main() {
         switch(choice){
             case LOAD_GAME:{
                 printf("Loading saved game...\n");
+                if (resetParams(&rooms, &roomCount, &allocRoomSize, &playerPath, &allocPathSize, &playerPathCount, &player) == false) return EXIT_FAILURE;
+
                 loadGame(layoutStateFPath, playerStateFPath, &rooms, &roomCount, &allocRoomSize, player);
 
                 Room* prevRoom = NULL;
@@ -81,6 +110,9 @@ int main() {
             }
             case NEW_GAME:
                 printf("Generating a new game...\n");
+
+                if (resetParams(&rooms, &roomCount, &allocRoomSize, &playerPath, &allocPathSize, &playerPathCount, &player) == false) return EXIT_FAILURE;
+                
                 newGame(&rooms, &roomCount, 20, &allocRoomSize, player);
                 exploreDungeon(&rooms, &roomCount, &allocRoomSize, NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
                 break;

@@ -61,8 +61,9 @@ void pickUpItem(Player* player, int pickupItemID){
     }
 
     // Add item to player inventory
-    ItemList_insert(&player->inventory, pickupTargetItem);
-    printf("You picked up an Item. Press i to see your inventory\n");
+    if (ItemList_insert(&player->inventory, pickupTargetItem) != NULL){
+        printf("You picked up an Item. Press i to see your inventory\n");
+    }
 }
 
 void dropItem(Player* player, int dropItemID){
@@ -232,7 +233,6 @@ bool triggerEvents(Room* room, Player* player){
         currEventNode = currEventNode->next;
     }
 
-    printf("Events Passed: %d\n", eventsPassed);
     return eventsPassed;
 }
 
@@ -240,7 +240,7 @@ bool triggerEvent(Room* room, Player* player, Event currEvent){
     bool eventPassed = false;
     switch(currEvent){
         case NORMAL:
-            printf("This room is a normal room\n");
+            // printf("This room is a normal room\n");
             EventList_delete(&room->events, currEvent);
             eventPassed = true;
             

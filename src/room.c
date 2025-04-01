@@ -47,8 +47,6 @@ Room* Room_construct(int ID, Room* north, Room* south, Room* west, Room* east, E
 }
 
 Room* constructRandomRoom(int roomCount, int noItems, int noEvents){
-    // if there are 3 or more items in a room, add a LOCKED event to the room;
-
     ItemNode* items = NULL;
     int* itemsArr = malloc(noItems*sizeof(int));
     // Can also use the probability generation here
@@ -60,7 +58,7 @@ Room* constructRandomRoom(int roomCount, int noItems, int noEvents){
 
     EventNode* events = NULL;
     int* eventsArr = malloc(noEvents*sizeof(int));
-    generateRandomIntArr(eventsArr, noEvents, 0, TOTAL_ITEMS_COUNT-1, 0);
+    generateRandomIntArr(eventsArr, noEvents, 0, TOTAL_EVENTS_COUNT-1, 0);
     for (int i=0; i<noEvents; i++){
         int eventNum = eventsArr[i];
         EventList_insert(&events, eventNum);
@@ -209,9 +207,6 @@ void displayRoom(Room* room){
     printf("Room - ID: %d\n", room->ID);
     printf("Items in room (%d): \n", itemListCount(room->items));
     printItemList(room->items);
-    printf("Events in room (%d): \n", eventListCount(room->events));
-    printEventList(room->events);
-    printf("Room Connections: %d %d %d %d\n", room->north != NULL?room->north->ID:DNE, room->south != NULL?room->south->ID:DNE, room->west != NULL?room->west->ID:DNE, room->east != NULL?room->east->ID:DNE);
 }
 
 void displayRooms(Room** rooms, int roomCount){

@@ -97,7 +97,7 @@ bool validateItemTradeIn(Player* player, char message[]){
             printf("Invalid itemId\nPress -1 to quit\n");
             printf("Your inventory: ");
             printItemList(player->inventory);
-            validateItemTradeIn(player, message);
+            return validateItemTradeIn(player, message);
         }else{
             return true;
         }
@@ -116,7 +116,7 @@ bool validateItemTradeOut(Player* player, char message[]){
         if (item > TOTAL_ITEMS_COUNT-1){
             printf("Invalid itemId\nPress -1 to quit\n");
             
-            validateItemTradeOut(player, message);
+            return validateItemTradeOut(player, message);
         }else{
             ItemList_insert(&player->inventory, Item_construct(item));
             return true;
