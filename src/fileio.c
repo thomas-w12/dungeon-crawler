@@ -149,10 +149,10 @@ int loadPlayerState(const char* playerStateFPath, Player* player) {
         return EXIT_FAILURE;
     }
 
-    char nameBuffer[256]; // Temporary buffer for reading the name
-    fscanf(file, "%255[^,],%d,%d,%d,", nameBuffer, &player->currentRoom, &player->health, &player->score);
+    char nameBuffer[100]; // Temporary buffer for reading the name
+    fscanf(file, "%99[^,],%d,%d,%d,", nameBuffer, &player->currentRoom, &player->health, &player->score);
 
-    player->name = strdup(nameBuffer); // Dynamically allocate and copy the name
+    strcpy(player->name, nameBuffer);
     
     player->inventory = NULL;
     for (int j=0; j<MAX_ITEMS_IN_ROOM; j++){

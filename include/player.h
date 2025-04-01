@@ -8,7 +8,7 @@
 #define MAX_PLAYER_ITEMS 3
 
 typedef struct Player {
-    char* name; 
+    char name[100]; 
     int currentRoom; //ID of current room (This is redundant)
     Room* currentRoomPtr; // Pointer to current room
     int health; // Health bar

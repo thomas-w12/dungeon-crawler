@@ -18,15 +18,15 @@ bool loadGame(char* layoutStateFPath, char* playerStateFPath, Room*** roomsPtr, 
     return true;
 }
 
-bool newGame(Room*** roomsPtr, int* roomCount, int noOfRooms, int* allocRoomSize, Player* player){
+bool newGame(Room*** roomsPtr, int* roomCount, int noOfRooms, int* allocRoomSize, Player** playerPtr){
     char playerNameBuff[100];
     printf("Enter player name: ");
     scanf(" %99[^\n]", playerNameBuff);
     clearBuffer();
 
     generateLayout(roomsPtr, roomCount, noOfRooms, allocRoomSize);
-    free(player->name);
-    player->name = strdup(playerNameBuff);
+    free(*playerPtr);
+    *playerPtr = Player_construct(playerNameBuff, 0, 100, 0, NULL);
 
     return true;
 }
@@ -102,10 +102,10 @@ int main() {
             }
             case NEW_GAME:
                 printf("Generating a new game...\n");
-
                 if (resetParams(&rooms, &roomCount, &allocRoomSize, &playerPath, &allocPathSize, &playerPathCount, &player) == false) return EXIT_FAILURE;
                 
-                newGame(&rooms, &roomCount, INITIAL_NO_OF_ROOMS, &allocRoomSize, player);
+                newGame(&rooms, &roomCount, INITIAL_NO_OF_ROOMS, &allocRoomSize, &player);
+                
                 exploreDungeon(&rooms, &roomCount, &allocRoomSize, NULL, rooms[0], player, &playerPath, &allocPathSize, &playerPathCount);
                 break;
             case EXIT:
@@ -121,12 +121,10 @@ int main() {
 
     saveLayout(layoutStateFPath, rooms, roomCount);
     savePlayerState(playerStateFPath, player);
+    
     free(playerPath);
-    printf("Freed player path");
     freeRooms(&rooms, &roomCount);
-    printf("Freed player rooms");
     freePlayer(player);
-    printf("Freed player");
 
     return EXIT_SUCCESS;
 }
