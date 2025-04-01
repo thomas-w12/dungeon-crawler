@@ -6,6 +6,7 @@
 #include "room.h"
 
 #define MAX_PLAYER_ITEMS 3
+#define MAX_PLAYER_NAME_LENGTH 100
 
 typedef struct Player {
     char name[100]; 

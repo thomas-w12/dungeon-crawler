@@ -10,13 +10,14 @@
 
 
 Player* Player_construct(char* name, int currentRoom, int health, int score, Room* currentRoomPtr){
-    Player* player = (Player*)malloc(sizeof(Player));
+    Player* player = malloc(sizeof(Player));
     if (player == NULL){
         printf("Could not create player\n");
         return NULL;
     }
 
-    strcpy(player->name, name);
+    strncpy(player->name, name, MAX_PLAYER_NAME_LENGTH - 1);
+    player->name[MAX_PLAYER_NAME_LENGTH - 1] = '\0';
     player->currentRoom = currentRoom;
     player->health = health;
     player->score = score;
