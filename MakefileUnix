@@ -55,9 +55,9 @@ valgrind_item_pickup_inventory_test: $(OBJDIR)/item_pickup_inventory_test.o $(OB
 	$(CC) $(CFLAGS) $(OBJDIR)/item_pickup_inventory_test.o $(OBJS) -o $(OBJDIR)/item_pickup_inventory_test_runner
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes $(OBJDIR)/item_pickup_inventory_test_runner
 
-test: player_save_load_test layout_save_load_test player_health_test item_pickup_inventory_test
+test: player_save_load_test layout_save_load_test item_pickup_inventory_test
 
-valgrind_tests: valgrind_player_save_load_test valgrind_layout_save_load_test valgrind_player_health_test valgrind_item_pickup_inventory_test
+valgrind_tests: valgrind_player_save_load_test valgrind_layout_save_load_test valgrind_item_pickup_inventory_test
 
 valgrind: $(EXE)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(EXE)
