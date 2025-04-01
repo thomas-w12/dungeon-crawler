@@ -122,8 +122,11 @@ int main() {
     saveLayout(layoutStateFPath, rooms, roomCount);
     savePlayerState(playerStateFPath, player);
     free(playerPath);
+    printf("Freed player path");
     freeRooms(&rooms, &roomCount);
+    printf("Freed player rooms");
     freePlayer(player);
+    printf("Freed player");
 
     return EXIT_SUCCESS;
 }

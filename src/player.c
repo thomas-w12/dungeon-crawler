@@ -221,17 +221,18 @@ bool triggerPuzzleEvent(Room* room, Player* player, int puzzleIndex){
 bool triggerEvents(Room* room, Player* player){
     bool eventsPassed = true;
     
-    EventNode* currEventNode = room->events;
+    int events[MAX_ROOM_EVENTS];
+    eventListToArray(room->events, events, MAX_ROOM_EVENTS);
 
-    while (currEventNode != NULL){
-        Event currEvent = currEventNode->data;
+    for (int i=0; i<MAX_ROOM_EVENTS; i++){
+        if (events[i] == DNE) continue;
+        Event currEvent = (Event) events[i];
+        
         eventsPassed &= triggerEvent(room, player, currEvent);
 
         if (eventsPassed == false) return eventsPassed; // Dont continue if one event fails
         if (player->health <= 0) return false;
-
-        currEventNode = currEventNode->next;
-    }
+    } 
 
     return eventsPassed;
 }
