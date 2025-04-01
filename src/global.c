@@ -41,10 +41,15 @@ int* generateRandomIntArr(int* arr,  int arrSize,int start, int end, int filledC
     return arr;
 }
 
-// Fill an array with random numbers based on probability
+/// @brief Fill an array with random numbers based on probability
+/// @param arr Array to fill with random values
+/// @param arrSize Size of arr
+/// @param start Start number of valid range of values
+/// @param end End number of valid range of values
+/// @param numberOccurenceProbArr Array that contains the probability in % of occurence of a random number between start and end
+/// @param numberOccurenceProbArrCount Size of numberOccurenceProbArr 
+/// @return The pointer to arr
 int* generateRandomIntArrProb(int* arr, int arrSize, int start, int end, int* numberOccurenceProbArr, int numberOccurenceProbArrCount){
-    // if (start != 0) return NULL; // might have to remove this since we are gewtting the randIndex from the for loop
-
     int probSum = 0;
     for (int i=0; i<numberOccurenceProbArrCount; i++){
         probSum += numberOccurenceProbArr[i];
@@ -52,7 +57,7 @@ int* generateRandomIntArrProb(int* arr, int arrSize, int start, int end, int* nu
     if (probSum < 100) {
         printf("The sum of the probability arr has to be at least 100%%\n");
         return NULL;
-     } // Because might cause an inifinite loop;
+     }
 
     int* numberOccurenceArr = calloc(numberOccurenceProbArrCount, sizeof(int));
 
@@ -67,7 +72,6 @@ int* generateRandomIntArrProb(int* arr, int arrSize, int start, int end, int* nu
             int randNumIndex = randNum-start; // since it's an interval shift to the left by start num (is start is 2, index of randNum=2 is 2-2=0 )
             float interval = 1.0/(numberOccurenceProbArr[randNumIndex]/100.0);
             int randNumCount = numberOccurenceArr[randNumIndex];
-            // printf("\nInterval: %f, Rand num: %d, Occurence: %d, Prob: %f", interval, randNum, numberOccurenceArr[randNumIndex], (numberOccurenceProbArr[randNumIndex]/100.0));
             if (i >= (randNumCount*interval)){
                 arr[i] = randNum;
                 numberOccurenceArr[randNumIndex] ++;
@@ -76,21 +80,6 @@ int* generateRandomIntArrProb(int* arr, int arrSize, int start, int end, int* nu
         }
     }
     
-    // printf("\nNumberOccurenceProbArrCount: \n");
-    // for (int i=0; i<numberOccurenceProbArrCount; i++){
-    //     printf("index: %d, val: %d\n", i, numberOccurenceProbArr[i]);
-    // }
-
-    // printf("\nNumberOccurenceArr: \n");
-    // for (int i=0; i<numberOccurenceProbArrCount; i++){
-    //     printf("index: %d, val: %d\n", i, numberOccurenceArr[i]);
-    // }
-
-    // printf("\nArr: \n");
-    // for (int i=0; i<arrSize; i++){
-    //     printf("index: %d, val: %d\n", i, arr[i]);
-    // }
-
     free(numberOccurenceArr);
     return arr;
 }

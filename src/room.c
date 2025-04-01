@@ -49,7 +49,6 @@ Room* Room_construct(int ID, Room* north, Room* south, Room* west, Room* east, E
 Room* constructRandomRoom(int roomCount, int noItems, int noEvents){
     ItemNode* items = NULL;
     int* itemsArr = malloc(noItems*sizeof(int));
-    // Can also use the probability generation here
     generateRandomIntArr(itemsArr, noItems, 0, TOTAL_ITEMS_COUNT-1, 0);
     for (int i=0; i<noItems; i++){
         int itemID = itemsArr[i];

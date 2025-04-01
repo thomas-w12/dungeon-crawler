@@ -119,7 +119,7 @@ int main() {
         }
     }
 
-    // saveLayout(layoutStateFPath, rooms, roomCount);
+    saveLayout(layoutStateFPath, rooms, roomCount);
     savePlayerState(playerStateFPath, player);
     free(playerPath);
     freeRooms(&rooms, &roomCount);
