@@ -52,15 +52,17 @@ int saveLayout(const char* layoutStateFPath, Room** rooms, int roomCount) {
     return EXIT_SUCCESS;
 }
 
-int loadLayout(const char* layoutStateFPath, Room*** roomsPtr, int* roomCount, int* allocRoomSize) {
+bool loadLayout(const char* layoutStateFPath, Room*** roomsPtr, int* roomCount, int* allocRoomSize) {
     FILE* file = fopen(layoutStateFPath, "r");
 
     if (file == NULL) {
         perror("Error opening layout file");
-        return EXIT_FAILURE;
+        return false;
     }
 
     fscanf(file, "%d", roomCount);
+
+    if (*roomCount == 0) return false;
 
     reallocRooms(roomsPtr, allocRoomSize, *roomCount);
     Room** rooms = *roomsPtr;
@@ -87,7 +89,7 @@ int loadLayout(const char* layoutStateFPath, Room*** roomsPtr, int* roomCount, i
         int result = fscanf(file, "%d,%d,%d,%d,%d,", 
                &id, &northID, &southID, &westID, &eastID);
         
-        if (result != 5) return EXIT_FAILURE;
+        if (result != 5) return false;
 
         rooms[i]->ID = id;
         rooms[i]->north = (northID != DNE) ? rooms[northID] : NULL;
@@ -115,7 +117,7 @@ int loadLayout(const char* layoutStateFPath, Room*** roomsPtr, int* roomCount, i
     }
 
     fclose(file);
-    return EXIT_SUCCESS;
+    return true;
 }
 
 int savePlayerState(const char* playerStateFPath, Player* player) {
@@ -143,17 +145,18 @@ int savePlayerState(const char* playerStateFPath, Player* player) {
     return EXIT_SUCCESS;
 }
 
-int loadPlayerState(const char* playerStateFPath, Player* player) {
+bool loadPlayerState(const char* playerStateFPath, Player* player) {
     FILE* file = fopen(playerStateFPath, "r");
 
     if (file == NULL) {
         perror("Error opening player state file");
-        return EXIT_FAILURE;
+        return false;
     }
 
     char nameBuffer[100]; // Temporary buffer for reading the name
     int result = fscanf(file, "%99[^,],%d,%d,%d,", nameBuffer, &player->currentRoom, &player->health, &player->score);
-    if (result != 4) return EXIT_FAILURE;
+    
+    if (result != 4) return false;
 
     strcpy(player->name, nameBuffer);
     
@@ -170,5 +173,5 @@ int loadPlayerState(const char* playerStateFPath, Player* player) {
     }
 
     fclose(file);
-    return EXIT_SUCCESS;
+    return true;
 }

@@ -16,7 +16,7 @@ bool loadGame(char* layoutStateFPath, char* playerStateFPath, Room*** roomsPtr, 
     
     status &= loadLayout(layoutStateFPath, roomsPtr, roomCount, allocRoomSize);
     status &= loadPlayerState(playerStateFPath, player);
-
+    
     return status;
 }
 
