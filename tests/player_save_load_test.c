@@ -43,8 +43,8 @@ int main() {
 
     // Load player state from the file
     Player* loadedPlayer = Player_construct("", 0, 0, 0, NULL);
-    int loadStatus = loadPlayerState(playerStateFPath, loadedPlayer);
-    if (loadStatus != EXIT_SUCCESS) {
+    bool loadStatus = loadPlayerState(playerStateFPath, loadedPlayer);
+    if (loadStatus != true) {
         printf("Error loading player state from file.\n");
         return EXIT_FAILURE;
     }

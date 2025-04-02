@@ -72,8 +72,8 @@ int main(int argc, char *argv[]) {
     Room** loadedRooms = NULL;
     int loadedRoomCount = 0;
     int loadedAllocRoomSize = 0;
-    int loadStatus = loadLayout(layoutStateFPath, &loadedRooms, &loadedRoomCount, &loadedAllocRoomSize);
-    if (loadStatus != EXIT_SUCCESS) {
+    bool loadStatus = loadLayout(layoutStateFPath, &loadedRooms, &loadedRoomCount, &loadedAllocRoomSize);
+    if (loadStatus != true) {
         printf("Error loading layout from file.\n");
         return EXIT_FAILURE;
     }
