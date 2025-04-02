@@ -12,10 +12,12 @@
 
 
 bool loadGame(char* layoutStateFPath, char* playerStateFPath, Room*** roomsPtr, int* roomCount, int* allocRoomSize, Player* player){ // Need to check if there is a saved file and also if the saved file is empty or valid
-    loadLayout(layoutStateFPath, roomsPtr, roomCount, allocRoomSize);
-    loadPlayerState(playerStateFPath, player);
+    bool status = true;
+    
+    status &= loadLayout(layoutStateFPath, roomsPtr, roomCount, allocRoomSize);
+    status &= loadPlayerState(playerStateFPath, player);
 
-    return true;
+    return status;
 }
 
 bool newGame(Room*** roomsPtr, int* roomCount, int noOfRooms, int* allocRoomSize, Player** playerPtr){
@@ -64,7 +66,6 @@ void displayMainMenu(){
 
 int main() {
     srand(time(0));
-    printf("%ld\n",sizeof(Item));
 
     char layoutStateFPath[] = {"saved_games/layoutState.txt"};
     char playerStateFPath[] = {"saved_games/playerState.txt"};
@@ -95,7 +96,11 @@ int main() {
                 printf("Loading saved game...\n");
                 if (resetParams(&rooms, &roomCount, &allocRoomSize, &playerPath, &allocPathSize, &playerPathCount, &player) == false) return EXIT_FAILURE;
 
-                loadGame(layoutStateFPath, playerStateFPath, &rooms, &roomCount, &allocRoomSize, player);
+                if (loadGame(layoutStateFPath, playerStateFPath, &rooms, &roomCount, &allocRoomSize, player) == false) {
+                    printf("There was an error loading the saved game!\n");
+                    exitGame = true;
+                    break;
+                }
 
                 Room* prevRoom = NULL;
                 exploreDungeon(&rooms, &roomCount, &allocRoomSize, prevRoom, rooms[player->currentRoom], player, &playerPath, &allocPathSize, &playerPathCount);
@@ -122,7 +127,7 @@ int main() {
 
     saveLayout(layoutStateFPath, rooms, roomCount);
     savePlayerState(playerStateFPath, player);
-    
+
     free(playerPath);
     freeRooms(&rooms, &roomCount);
     freePlayer(player);

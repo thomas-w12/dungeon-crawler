@@ -84,8 +84,10 @@ int loadLayout(const char* layoutStateFPath, Room*** roomsPtr, int* roomCount, i
 
         int id, northID, southID, westID, eastID;
 
-        fscanf(file, "%d,%d,%d,%d,%d,", 
+        int result = fscanf(file, "%d,%d,%d,%d,%d,", 
                &id, &northID, &southID, &westID, &eastID);
+        
+        if (result != 5) return EXIT_FAILURE;
 
         rooms[i]->ID = id;
         rooms[i]->north = (northID != DNE) ? rooms[northID] : NULL;
@@ -150,7 +152,8 @@ int loadPlayerState(const char* playerStateFPath, Player* player) {
     }
 
     char nameBuffer[100]; // Temporary buffer for reading the name
-    fscanf(file, "%99[^,],%d,%d,%d,", nameBuffer, &player->currentRoom, &player->health, &player->score);
+    int result = fscanf(file, "%99[^,],%d,%d,%d,", nameBuffer, &player->currentRoom, &player->health, &player->score);
+    if (result != 4) return EXIT_FAILURE;
 
     strcpy(player->name, nameBuffer);
     

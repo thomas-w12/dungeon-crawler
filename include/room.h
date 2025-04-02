@@ -14,7 +14,7 @@
 #define MAX_ROOM_EVENTS 3
 #define MAX_DIRECTIONS 4
 #define EXPAND_ROOM_COUNT 50
-#define INITIAL_NO_OF_ROOMS 10
+#define INITIAL_NO_OF_ROOMS 1000
 
 typedef enum DirectionsIndex{
     NorthIndex,
